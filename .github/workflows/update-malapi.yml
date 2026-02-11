@@ -1,4 +1,4 @@
-name: Update MALAPI (CSV)
+name: Weekly - Update MALAPI 
 
 on:
   schedule:
@@ -118,5 +118,4 @@ jobs:
           else
             git commit -m "update refsets $(date +'%Y-%m-%d')"
             git push
-            echo "Update completed."
           fi

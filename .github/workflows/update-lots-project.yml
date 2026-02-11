@@ -1,5 +1,4 @@
-name: Update LOTS Project (CSV)
-
+name: Weekly - Update LOTS Project 
 on:
   schedule:
     - cron: '30 12 * * 0'
@@ -43,58 +42,34 @@ jobs:
           output_file = "output/lots_project.csv"
 
           try:
-              # 1. Téléchargement de la page
               response = requests.get(url, timeout=15)
               response.raise_for_status()
-              
-              # 2. Parsing HTML
               soup = BeautifulSoup(response.content, 'html.parser')
-              
-              # On cherche le tableau (souvent le seul ou le premier grand tableau)
-              table = soup.find('table')
-              
+              table = soup.find('table')     
               if not table:
                   print("⚠️ Warning: No table found on lots-project.com")
-                  sys.exit(0) # On ne casse pas le workflow, mais on sort
-
-              # 3. Extraction des En-têtes
-              # On cherche les <th> dans le <thead> ou la première ligne
+                  sys.exit(0)
               headers = []
               header_row = table.find('tr')
               if header_row:
                   headers = [th.get_text(strip=True) for th in header_row.find_all(['th', 'td'])]
-
-              # Si les headers ne sont pas trouvés, on met des défauts
               if not headers:
                   headers = ["Domain", "Tags", "Service Provider"]
-
-              # 4. Extraction des Données
               rows = []
-              # On itère sur toutes les lignes sauf la première (headers)
               for tr in table.find_all('tr')[1:]:
                   cells = tr.find_all('td')
                   if not cells:
-                      continue
-                  
-                  # Nettoyage de chaque cellule
-                  # get_text(separator=' ') permet de séparer les tags multiples (ex: "Phishing C&C")
-                  row_data = [cell.get_text(separator=' ', strip=True) for cell in cells]
-                  
-                  # On s'assure d'avoir le bon nombre de colonnes
+                      continue  
+                  row_data = [cell.get_text(separator=' ', strip=True) for cell in cells]   
                   if row_data:
                       rows.append(row_data)
-
-              # 5. Écriture CSV
               with open(output_file, 'w', newline='', encoding='utf-8') as f:
                   writer = csv.writer(f)
                   writer.writerow(headers)
-                  writer.writerows(rows)
-              
+                  writer.writerows(rows)              
               print(f"✅ Success: {len(rows)} trusted sites extracted to {output_file}")
-
           except Exception as e:
               print(f"❌ Error scraping LOTS: {e}")
-              # On exit 0 pour ne pas bloquer tout le pipeline si le site change
               sys.exit(0)
           EOF
 
@@ -110,5 +85,4 @@ jobs:
           else
             git commit -m "update refsets $(date +'%Y-%m-%d')"
             git push
-            echo "Update completed."
           fi

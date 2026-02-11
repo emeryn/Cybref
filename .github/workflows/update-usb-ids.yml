@@ -1,4 +1,4 @@
-name: Convert USB IDs to JSON
+name: Weekly - USB IDs to JSON
 
 on:
   schedule:

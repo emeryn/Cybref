@@ -1,4 +1,4 @@
-name: Update LoTtunnels (JSON)
+name: Weekly - Update LoTtunnels 
 
 on:
   schedule:

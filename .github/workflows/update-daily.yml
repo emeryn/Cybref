@@ -1,0 +1,74 @@
+name: Daily - Utils refset
+
+on:
+  schedule:
+    - cron: '30 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-daily:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+        # Ensure output directory exits
+      - name: Creating output directory
+        run: mkdir -p output
+
+        # CISA Catalog of Known Exploited Vulnerabilities
+      - name: Download https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+        run: curl -L -o output/cisa_kev.json "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
+
+        # MalwareBazaar Daily Sample   
+      - name: Download https://bazaar.abuse.ch/export/csv/recent/
+        run: curl -L -o output/malwarebazaar_daily_sample.csv "https://bazaar.abuse.ch/export/csv/recent/"
+
+        # MalwareBazaar Code Signing Certificate Blocklist (CSCB)
+      - name: Download https://bazaar.abuse.ch/export/csv/cscb/
+        run: curl -L -o output/malwarebazaar_cscb.csv "https://bazaar.abuse.ch/export/csv/cscb/"
+
+        # MalwareBazaar YARA Rule Statistics
+      - name: Download https://bazaar.abuse.ch/export/csv/yara-stats/
+        run: curl -L -o output/malwarebazaar_yara_statistics.csv "https://bazaar.abuse.ch/export/csv/yara-stats/"
+
+        # Threatfox (Abuse.ch) - Botnets IoT
+      - name: Download https://threatfox.abuse.ch/export/json/recent/
+        run: curl -L -o output/threatfox_all_recent.json "https://threatfox.abuse.ch/export/json/recent/"
+
+        # Tor nodes - ALL
+      - name: Download https://onionoo.torproject.org/details
+        run: curl -L -o output/tor_nodes_all.json "https://onionoo.torproject.org/details"
+ 
+        # Tor nodes - Exit Only
+      - name: Download https://onionoo.torproject.org/details?search=flag:Exit
+        run: curl -L -o output/tor_nodes_exit.json "https://onionoo.torproject.org/details?search=flag:Exit"
+   
+        # CWE Mitre
+      - name: Download https://cwe.mitre.org/data/xml/cwec_latest.xml.zip
+        run: |
+          curl -L -o output/cwec_latest.xml.zip "https://cwe.mitre.org/data/xml/cwec_latest.xml.zip"
+          unzip -p output/cwec_latest.xml.zip > output/cwec_latest.xml
+          rm -f output/cwec_latest.xml.zip  | true
+
+        # EPSS (Exploit Prediction Scoring System) - Daily Scores
+      - name: Download https://epss.cyentia.com/epss_scores-current.csv.gz
+        run: |
+          curl -L -o output/epss_scores.csv.gz "https://epss.cyentia.com/epss_scores-current.csv.gz"
+          gunzip -f output/epss_scores.csv.gz
+          rm -f output/epss_scores.csv.gz | true
+        
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'          
+          git add .         
+          if git diff --staged --quiet; then
+            echo "No change"
+          else
+            git commit -m "update refsets $(date +'%Y-%m-%d')"
+            git push
+          fi

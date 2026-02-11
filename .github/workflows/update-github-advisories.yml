@@ -1,4 +1,4 @@
-name: Update Github Advisories
+name: Weekly - Update Github Advisories
 
 on:
   schedule:
@@ -65,20 +65,14 @@ jobs:
           
           rm -rf temp_ghsa
 
-      # ==================================================================
-      # 3. COMMIT & PUSH
-      # ==================================================================
       - name: Commit and Push Changes
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          
-          git add output/
-          
+          git add .
           if git diff --staged --quiet; then
             echo "No changes detected across all datasets."
           else
             git commit -m "update refsets $(date +'%Y-%m-%d')"
             git push
-            echo "✅ Updates pushed successfully."
           fi

@@ -1,7 +1,7 @@
-name: Update FileSec Project (CSV)
+name: Weekly - Update FileSec Project
 on:
   schedule:
-    - cron: '30 13 * * 0'
+    - cron: '30 18 * * 0'
   workflow_dispatch:
 
 permissions:
@@ -24,62 +24,48 @@ jobs:
 
       - name: Process FileSec.io Website
         run: |
-          echo "Processing FileSec.io..."
           pip install beautifulsoup4 requests
-
           python3 - <<EOF
           import requests
           from bs4 import BeautifulSoup
           import csv
           import sys
-
           url = "https://filesec.io"
           output_file = "output/filesec_project.csv"
-
-          # User-Agent pour éviter d'être bloqué
           headers = {
               'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
           }
 
           try:
               response = requests.get(url, headers=headers, timeout=20)
-              response.raise_for_status()
-              
+              response.raise_for_status()  
               soup = BeautifulSoup(response.content, 'html.parser')
               table = soup.find('table')
               if not table:
                   print("⚠️ Warning: No table found on filesec.io")
                   sys.exit(0)
-
               headers_list = []
               header_row = table.find('tr')
               if header_row:
                   headers_list = [th.get_text(strip=True) for th in header_row.find_all(['th', 'td'])]
-              
               if not headers_list:
                   headers_list = ["Extension", "Description", "Tags", "OS"]
-
               rows = []
               for tr in table.find_all('tr')[1:]: # Skip header
                   cells = tr.find_all('td')
                   if not cells:
-                      continue
-                  
+                      continue    
                   row_data = []
                   for cell in cells:
                       text = cell.get_text(separator=' ', strip=True)
-                      row_data.append(text)
-                  
+                      row_data.append(text)                
                   if any(row_data): # Évite les lignes vides
                       rows.append(row_data)
-
               with open(output_file, 'w', newline='', encoding='utf-8') as f:
                   writer = csv.writer(f)
                   writer.writerow(headers_list)
-                  writer.writerows(rows)
-              
+                  writer.writerows(rows)      
               print(f"✅ Success: {len(rows)} file extensions extracted to {output_file}")
-
           except Exception as e:
               print(f"❌ Error scraping FileSec: {e}")
               sys.exit(0)
@@ -95,7 +81,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes detected."
           else
-            git commit -m "update refsets filesec $(date +'%Y-%m-%d')"
+            git commit -m "update refsets $(date +'%Y-%m-%d')"
             git push
-            echo "Update completed."
           fi

@@ -1,15 +1,15 @@
-name: Download JSON and CSV refset
+name: Weekly - Utils refset
 
 on:
   schedule:
-    - cron: '30 2 * * *'
+    - cron: '30 2 * * 6'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  update-refsets:
+  update-weekly:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -48,10 +48,6 @@ jobs:
       - name: Download https://gtfobins.org/api.json
         run:  curl -L -o output/gftobins_org.json "https://gtfobins.org/api.json"
 
-        # CISA Catalog of Known Exploited Vulnerabilities
-      - name: Download https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
-        run: curl -L -o output/cisa_kev.json "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
-
         # Abuse.ch Feodo Tracker (Botnet C2 IPs)
       - name: Download https://feodotracker.abuse.ch/downloads/ipblocklist.json
         run: curl -L -o output/feodotracker_ipblocklist.json "https://feodotracker.abuse.ch/downloads/ipblocklist.json"
@@ -67,18 +63,6 @@ jobs:
         # MITRE ATT&CK Enterprise
       - name: Download https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json
         run: curl -L -o output/mitre_attack_enterprise.json "https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json"
-
-        # MalwareBazaar Daily Sample   
-      - name: Download https://bazaar.abuse.ch/export/csv/recent/
-        run: curl -L -o output/malwarebazaar_daily_sample.csv "https://bazaar.abuse.ch/export/csv/recent/"
-
-        # MalwareBazaar Code Signing Certificate Blocklist (CSCB)
-      - name: Download https://bazaar.abuse.ch/export/csv/cscb/
-        run: curl -L -o output/malwarebazaar_cscb.csv "https://bazaar.abuse.ch/export/csv/cscb/"
-
-        # MalwareBazaar YARA Rule Statistics
-      - name: Download https://bazaar.abuse.ch/export/csv/yara-stats/
-        run: curl -L -o output/malwarebazaar_yara_statistics.csv "https://bazaar.abuse.ch/export/csv/yara-stats/"
 
         # Mitchell Krog - Bad user agent - NGINX
       - name: Download https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/_generator_lists/bad-user-agents.list
@@ -108,22 +92,10 @@ jobs:
       - name: Download https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Web-Shells/backdoor_list.txt
         run: curl -L -o output/seclists_backdoor_list.list "https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Web-Shells/backdoor_list.txt"
 
-        # Threatfox (Abuse.ch) - Botnets IoT
-      - name: Download https://threatfox.abuse.ch/export/json/recent/
-        run: curl -L -o output/threatfox_all_recent.json "https://threatfox.abuse.ch/export/json/recent/"
-
         # Hijacklibs
       - name: Download https://hijacklibs.net/api/hijacklibs.json
         run: curl -L -o output/hijacklibs.json  "https://hijacklibs.net/api/hijacklibs.json"
 
-        # Tor nodes - ALL
-      - name: Download https://onionoo.torproject.org/details
-        run: curl -L -o output/tor_nodes_all.json "https://onionoo.torproject.org/details"
- 
-        # Tor nodes - Exit Only
-      - name: Download https://onionoo.torproject.org/details?search=flag:Exit
-        run: curl -L -o output/tor_nodes_exit.json "https://onionoo.torproject.org/details?search=flag:Exit"
-   
         # IP2ASN
       - name: Download https://iptoasn.com/data/ip2asn-v4.tsv.gz
         run: |
@@ -166,13 +138,6 @@ jobs:
           unzip -p output/tranco_top_1m.csv.zip > output/tranco_top_1m_domains.csv
           rm -f output/tranco_top_1m.csv.zip | true
 
-        # CWE Mitre
-      - name: Download https://cwe.mitre.org/data/xml/cwec_latest.xml.zip
-        run: |
-          curl -L -o output/cwec_latest.xml.zip "https://cwe.mitre.org/data/xml/cwec_latest.xml.zip"
-          unzip -p output/cwec_latest.xml.zip > output/cwec_latest.xml
-          rm -f output/cwec_latest.xml.zip  | true
-
         # LOLC2 - C2 DATA
       - name: Download https://raw.githubusercontent.com/lolc2/lolc2.github.io/refs/heads/main/c2_data.json
         run:  curl -L -o output/lolc2_C2_data.json "https://raw.githubusercontent.com/lolc2/lolc2.github.io/refs/heads/main/c2_data.json"
@@ -212,13 +177,6 @@ jobs:
         # LOTTUnnels - Domain list
       - name: Download https://raw.githubusercontent.com/LOTTunnels/LOTTunnels.github.io/refs/heads/main/_lottunnels/CSVs/domains.csv
         run:  curl -L -o output/lottunnels_domains.csv "https://raw.githubusercontent.com/LOTTunnels/LOTTunnels.github.io/refs/heads/main/_lottunnels/CSVs/domains.csv"      
-
-        # EPSS (Exploit Prediction Scoring System) - Daily Scores
-      - name: Download https://epss.cyentia.com/epss_scores-current.csv.gz
-        run: |
-          curl -L -o output/epss_scores.csv.gz "https://epss.cyentia.com/epss_scores-current.csv.gz"
-          gunzip -f output/epss_scores.csv.gz
-          rm -f output/epss_scores.csv.gz | true
 
         # ExploitDB (Mapping CVE <-> Exploit Code)
       - name: Download https://gitlab.com/exploit-database/exploitdb/-/raw/main/files_exploits.csv
