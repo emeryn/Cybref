@@ -33,7 +33,7 @@ jobs:
         run: |
           for year in $(seq 2002 $(date +%Y))
           do
-            curl -o "output/nvdce-2.0-${year}.json.gz" "https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-${year}.json.gz"
+            curl -o "output/nvdcve-2.0-${year}.json.gz" "https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-${year}.json.gz"
           done
 
       - name: Commit and push changes
