@@ -108,18 +108,30 @@ All processed files are stored in the `output/` directory and categorized below.
 
 ## ❤️ Community Acknowledgements
 
-This project would not exist without the tireless work of the global cybersecurity community. We want to thank and credit the following maintainers:
+Cybref is built upon the incredible work of the global cybersecurity community. Massive thanks to the researchers, maintainers, and organizations who provide these critical datasets:
 
-* **Abuse.ch** (FeodoTracker, ThreatFox, MalwareBazaar, URLhaus) for their vital IOC feeds.
-* **The LOLBAS & GTFOBins teams** for pioneering the Living Off The Land documentation.
-* **NIST** for maintaining the National Vulnerability Database.
-* **MITRE Corporation** for the ATT&CK framework.
-* **GitHub Security** for the Advisory Database.
-* **mthcht** for the incredible "Awesome-lists" repository and behavioral signatures.
-* **CISA** for the KEV Catalog.
-* **Daniel Miessler** for SecLists.
-* **LoTtunnels, LOOBins, LOLDrivers, LOLRMM** projects for their specialized research.
-* **The IEEE & Linux USB Project** for hardware standard maintenance.
+* **Threat Intelligence & Malware:**
+    * **[Abuse.ch](https://abuse.ch/)** for their comprehensive ecosystem (MalwareBazaar, ThreatFox, FeodoTracker, URLhaus).
+    * **[CISA](https://www.cisa.gov/)** for the KEV catalog.
+    * **[FIRST.org](https://www.first.org/)** for the EPSS scoring system.
+    * **[The Tor Project](https://www.torproject.org/)** for network transparency.
+    * **[OpenPhish](https://openphish.com/)** and **[Exploit-DB](https://www.exploit-db.com/)** for community feeds.
+    * **[mthcht](https://github.com/mthcht/awesome-lists)** for behavioral signatures (Suspicious MACs, User-Agents, Services).
+
+* **Offensive Security & Living Off The Land (LOL):**
+    * **The "LOL" Family:** [LOLBAS](https://lolbas-project.github.io/) (Windows), [GTFOBins](https://gtfobins.org/) (Unix), [LOOBins](https://www.loobins.io/) (macOS), [LOLDrivers](https://www.loldrivers.io/), [LOLRMM](https://lolrmm.io/), [LOLESXi](https://lolesxi-project.github.io/LOLESXi/), [LOFL](https://lofl-project.github.io/).
+    * **Tactics & Hijacking:** [FileSec.io](https://filesec.io/) (Extensions), [LOTS Project](https://lots-project.com/) (Trusted Sites), [MalAPI.io](https://malapi.io/) (WinAPI), [LoTtunnels](https://github.com/LoTtunnels), [HijackLibs](https://hijacklibs.net/), [LOLC2](https://lolc2.github.io/), [Bootloaders.io](https://www.bootloaders.io/).
+
+* **Vulnerabilities, Standards & Registries:**
+    * **[NIST NVD](https://nvd.nist.gov/)** & **[MITRE](https://mitre.org/)** (ATT&CK, CWE) for global standards.
+    * **[GitHub](https://github.com/advisories)** for the Advisory Database.
+    * **[IANA](https://www.iana.org/)** & **[IEEE](https://standards.ieee.org/)** for core protocol and hardware registries.
+    * **[Linux USB Project](http://www.linux-usb.org/)** for the USB ID repository.
+    * **[Mozilla](https://publicsuffix.org/)** for the Public Suffix List.
+
+* **Infrastructure, Cloud & Discovery:**
+    * **Wordlists:** [Daniel Miessler](https://github.com/danielmiessler/SecLists) (SecLists), [Mitchell Krog](https://github.com/mitchellkrogza) (Bad Bot Blocker), [Enesilhaydin](https://github.com/enesilhaydin/lothardware) (IoT Hardware).
+    * **Network:** [X4BNet](https://github.com/X4BNet/lists_vpn) (VPN Ranges), [Huzky](https://github.com/huzky-v/proton-vpn-server-list) (ProtonVPN), [Enzo-G](https://github.com/enzo-g/azureIPranges) (Azure Tags), [IPtoASN](https://iptoasn.com/), [Tranco](https://tranco-list.eu/) (Top 1M), [Disposable Domains](https://github.com/disposable-email-domains).
 
 ---
 
