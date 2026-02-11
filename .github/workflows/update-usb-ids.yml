@@ -1,0 +1,117 @@
+name: Convert USB IDs to JSON
+
+on:
+  schedule:
+    - cron: '30 1 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+jobs:
+  convert-usb-ids:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Create Output Directory
+        run: mkdir -p output
+
+      - name: Download and Convert
+        run: |
+          # 1. Download source file (Official GitHub mirror for HTTPS reliability)
+          echo "Downloading usb.ids..."
+          curl -L -o usb.ids "https://raw.githubusercontent.com/usbids/usbids/master/usb.ids"
+
+          # 2. Python Conversion Script
+          echo "Starting conversion..."
+          python3 - <<EOF
+          import re
+          import json
+          import sys
+
+          input_file = 'usb.ids'
+          output_file = 'output/usb_ids.json'
+
+          data = {}
+          current_vendor_id = None
+
+          # usb.ids often uses latin-1 (ISO-8859-1) encoding
+          try:
+              with open(input_file, 'r', encoding='latin-1') as f:
+                  for line in f:
+                      # Only strip the end of the line to preserve leading tabs
+                      line = line.rstrip()
+                      
+                      # Ignore empty lines or comments
+                      if not line or line.startswith('#'):
+                          continue
+
+                      # -------------------------------------------------------
+                      # CASE 1: It is a DEVICE (Product)
+                      # Syntax: One tab (\t) at start, then ID, then name
+                      # -------------------------------------------------------
+                      if line.startswith('\t') and not line.startswith('\t\t'):
+                          # Regex: Tab + 4 Hex + Space(s) + Name
+                          match = re.match(r'^\t([0-9a-fA-F]{4})\s+(.+)$', line)
+                          if match and current_vendor_id in data:
+                              product_id = match.group(1).lower()
+                              product_name = match.group(2).strip()
+                              
+                              # Add product under current vendor
+                              data[current_vendor_id]["products"][product_id] = product_name
+                          continue
+
+                      # -------------------------------------------------------
+                      # CASE 2: It is a VENDOR
+                      # Syntax: No tab at start, 4 Hex, then name
+                      # -------------------------------------------------------
+                      if not line.startswith('\t'):
+                          match = re.match(r'^([0-9a-fA-F]{4})\s+(.+)$', line)
+                          if match:
+                              vendor_id = match.group(1).lower()
+                              vendor_name = match.group(2).strip()
+                              
+                              current_vendor_id = vendor_id
+                              data[vendor_id] = {
+                                  "name": vendor_name,
+                                  "products": {}
+                              }
+                          continue
+                      
+                      # Note: We ignore lines starting with 2 tabs (\t\t)
+                      # These are "Interfaces", usually not needed for basic identification.
+
+              # Write JSON file
+              with open(output_file, 'w', encoding='utf-8') as f_out:
+                  json.dump(data, f_out, indent=2, ensure_ascii=False)
+              
+              print(f"✅ Success: {len(data)} vendors processed.")
+
+          except Exception as e:
+              print(f"❌ Error: {e}")
+              sys.exit(1)
+          EOF
+
+          # Clean up temporary source file
+          rm usb.ids
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          git add output/usb_ids.json
+          
+          if git diff --staged --quiet; then
+            echo "No changes detected in USB database."
+          else
+            git commit -m "chore: update refsets $(date +'%Y-%m-%d')"
+            git push
+            echo "Update completed."
+          fi

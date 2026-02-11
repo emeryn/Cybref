@@ -1,0 +1,271 @@
+name: Download JSON and CSV refset
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-refsets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+        # Ensure output directory exits
+      - name: Creating output directory
+        run: mkdir -p output
+
+        # Living Off the Orchard: macOS Binaries (LOOBins)
+      - name: Download https://www.loobins.io/loobins.json 
+        run: curl -L -o output/loobins_io.json "https://www.loobins.io/loobins.json"
+
+        # Curated list of known malicious bootloaders for various operating systems.
+      - name: Download https://www.bootloaders.io/api/bootloaders.json
+        run: curl -L -o output/bootloaders_io.json "https://www.bootloaders.io/api/bootloaders.json"
+
+        # Living off the Foreign Land Cmdlets and Binaries (LOFL)
+      - name: Download https://lofl-project.github.io/api/loflcab.json
+        run: curl -L -o output/loflcab.json "https://lofl-project.github.io/api/loflcab.json"
+
+        # Curated list of Remote Monitoring and Management (RMM)
+      - name: Download https://lolrmm.io/api/rmm_tools.json
+        run: curl -L -o output/lolrmm.json "https://lolrmm.io/api/rmm_tools.json"
+
+
+        # Living Off The Land Drivers is a curated list of Windows drivers used by adversaries (LOLdrivers) 
+      - name: Download https://www.loldrivers.io/api/drivers.json
+        run: curl -L -o output/loldrivers_io.json "https://www.loldrivers.io/api/drivers.json"
+
+        # LOLESXi features a comprehensive list of binaries/scripts natively available in VMware ESXi that adversaries have utilised in their operations
+      - name: Download https://lolesxi-project.github.io/LOLESXi/api/lolesxi.json
+        run: curl -L -o output/lolesxi.json "https://lolesxi-project.github.io/LOLESXi/api/lolesxi.json"
+
+        # Curated list of Unix-like executables that can be used to bypass local security restrictions in misconfigured systems
+      - name: Download https://gtfobins.org/api.json
+        run:  curl -L -o output/gftobins_org.json "https://gtfobins.org/api.json"
+
+        # CISA Catalog of Known Exploited Vulnerabilities
+      - name: Download https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+        run: curl -L -o output/cisa_kev.json "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
+
+        # Abuse.ch Feodo Tracker (Botnet C2 IPs)
+      - name: Download https://feodotracker.abuse.ch/downloads/ipblocklist.json
+        run: curl -L -o output/feodotracker_ipblocklist.json "https://feodotracker.abuse.ch/downloads/ipblocklist.json"
+
+        # LOLBAS (Living Off The Land Binaries, Scripts and Libraries)
+      - name: Download https://lolbas-project.github.io/api/lolbas.json
+        run: curl -L -o output/lolbas.json "https://lolbas-project.github.io/api/lolbas.json"
+
+        # MITRE ATT&CK Enterprise
+      - name: Download https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json
+        run: curl -L -o output/mitre_attack_enterprise.json "https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json"
+
+        # MITRE ATT&CK Enterprise
+      - name: Download https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json
+        run: curl -L -o output/mitre_attack_enterprise.json "https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json"
+
+        # MalwareBazaar Daily Sample   
+      - name: Download https://bazaar.abuse.ch/export/csv/recent/
+        run: curl -L -o output/malwarebazaar_daily_sample.csv "https://bazaar.abuse.ch/export/csv/recent/"
+
+        # MalwareBazaar Code Signing Certificate Blocklist (CSCB)
+      - name: Download https://bazaar.abuse.ch/export/csv/cscb/
+        run: curl -L -o output/malwarebazaar_cscb.csv "https://bazaar.abuse.ch/export/csv/cscb/"
+
+        # MalwareBazaar YARA Rule Statistics
+      - name: Download https://bazaar.abuse.ch/export/csv/yara-stats/
+        run: curl -L -o output/malwarebazaar_yara_statistics.csv "https://bazaar.abuse.ch/export/csv/yara-stats/"
+
+        # Mitchell Krog - Bad user agent - NGINX
+      - name: Download https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/_generator_lists/bad-user-agents.list
+        run: curl -L -o output/mitchell_krog_bad_user_agents.list "https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/_generator_lists/bad-user-agents.list"
+
+        # Mitchell Krog - Bad referers - NGINX
+      - name: Download https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/_generator_lists/bad-referrers.list
+        run: curl -L -o output/mitchell_krog_bad_referers.list "https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/_generator_lists/bad-referrers.list"
+
+        # Mitchell Krog - Fake Google Bots - NGINX
+      - name: Download https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/_generator_lists/fake-googlebots.list
+        run: curl -L -o output/mitchell_krog_fake_google_bots.list "https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/_generator_lists/fake-googlebots.list"
+
+        # Seclists - Default password
+      - name: Download https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Default-Credentials/default-passwords.csv
+        run: curl -L -o output/seclists_default_passwords.csv "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Default-Credentials/default-passwords.csv"
+
+        # Seclists - TLDS
+      - name: Download https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Discovery/DNS/tlds.txt
+        run: curl -L -o output/seclists_tlds.list "https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Discovery/DNS/tlds.txt"
+
+       # Seclists - Secret keywords
+      - name: Download https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Discovery/Variables/secret-keywords.txt
+        run: curl -L -o output/seclists_secret_keywords.list "https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Discovery/Variables/secret-keywords.txt"
+
+       # Seclists - Backdoor list
+      - name: Download https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Web-Shells/backdoor_list.txt
+        run: curl -L -o output/seclists_backdoor_list.list "https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Web-Shells/backdoor_list.txt"
+
+        # Threatfox (Abuse.ch) - Botnets IoT
+      - name: Download https://threatfox.abuse.ch/export/json/recent/
+        run: curl -L -o output/threatfox_all_recent.json "https://threatfox.abuse.ch/export/json/recent/"
+
+        # Hijacklibs
+      - name: Download https://hijacklibs.net/api/hijacklibs.json
+        run: curl -L -o output/hijacklibs.json  "https://hijacklibs.net/api/hijacklibs.json"
+
+        # Tor nodes - ALL
+      - name: Download https://onionoo.torproject.org/details
+        run: curl -L -o output/tor_nodes_all.json "https://onionoo.torproject.org/details"
+ 
+        # Tor nodes - Exit Only
+      - name: Download https://onionoo.torproject.org/details?search=flag:Exit
+        run: curl -L -o output/tor_nodes_exit.json "https://onionoo.torproject.org/details?search=flag:Exit"
+   
+        # IP2ASN
+      - name: Download https://iptoasn.com/data/ip2asn-v4.tsv.gz
+        run: |
+          curl -L -o output/ip2asn-v4.tsv.gz "https://iptoasn.com/data/ip2asn-v4.tsv.gz"
+          gunzip -f output/ip2asn-v4.tsv.gz
+          rm -f output/ip2asn-v4.tsv.gz | true
+
+        # mthcht - Awesome lists - Suspicious mac address list 
+      - name: Download https://raw.githubusercontent.com/mthcht/awesome-lists/refs/heads/main/Lists/suspicious_mac_address_list.csv
+        run: curl -L -o output/suspicious_mac_address_list.csv "https://raw.githubusercontent.com/mthcht/awesome-lists/refs/heads/main/Lists/suspicious_mac_address_list.csv"
+
+        # mthcht - Awesome lists - Suspicious user agent list
+      - name: Download https://raw.githubusercontent.com/mthcht/awesome-lists/refs/heads/main/Lists/suspicious_http_user_agents_list.csv
+        run: curl -L -o output/suspicious_http_user_agents_lists.csv "https://raw.githubusercontent.com/mthcht/awesome-lists/refs/heads/main/Lists/suspicious_http_user_agents_list.csv"
+
+        # mthcht - Awesome lists - Suspicious usb ids list
+      - name: Download https://raw.githubusercontent.com/mthcht/awesome-lists/refs/heads/main/Lists/suspicious_usb_ids_list.csv
+        run: curl -L -o output/suspicious_usb_ids_list.csv "https://raw.githubusercontent.com/mthcht/awesome-lists/refs/heads/main/Lists/suspicious_usb_ids_list.csv"
+
+        # mthcht - Awesome lists - Suspicious windows services name
+      - name: Download https://raw.githubusercontent.com/mthcht/awesome-lists/refs/heads/main/Lists/suspicious_windows_services_names_list.csv
+        run: curl -L -o output/suspicious_windows_services_names_list.csv "https://raw.githubusercontent.com/mthcht/awesome-lists/refs/heads/main/Lists/suspicious_windows_services_names_list.csv"
+
+        # AWS IP Range
+      - name: Download https://ip-ranges.amazonaws.com/ip-ranges.json
+        run:  curl -L -o output/aws_ip_ranges.json "https://ip-ranges.amazonaws.com/ip-ranges.json"
+
+        # GCP IP Range
+      - name: Download https://www.gstatic.com/ipranges/cloud.json
+        run:  curl -L -o output/gcp_ip_ranges.json "https://www.gstatic.com/ipranges/cloud.json"
+
+        # Azure IP Range - Using enzo-g github for standardized name/url
+      - name: Download https://enzo-g.github.io/azureIPranges/json-history/ServiceTags_Public.json
+        run:  curl -L -o output/azure_ip_ranges.json "https://enzo-g.github.io/azureIPranges/json-history/ServiceTags_Public.json"
+
+        # Tranco LIST
+      - name: Download https://tranco-list.eu/top-1m.csv.zip
+        run: |
+          curl -L -o output/tranco_top_1m.csv.zip "https://tranco-list.eu/top-1m.csv.zip"
+          unzip -p output/tranco_top_1m.csv.zip > output/tranco_top_1m_domains.csv
+          rm -f output/tranco_top_1m.csv.zip | true
+
+        # CWE Mitre
+      - name: Download https://cwe.mitre.org/data/xml/cwec_latest.xml.zip
+        run: |
+          curl -L -o output/cwec_latest.xml.zip "https://cwe.mitre.org/data/xml/cwec_latest.xml.zip"
+          unzip -p output/cwec_latest.xml.zip > output/cwec_latest.xml
+          rm -f output/cwec_latest.xml.zip  | true
+
+        # LOLC2 - C2 DATA
+      - name: Download https://raw.githubusercontent.com/lolc2/lolc2.github.io/refs/heads/main/c2_data.json
+        run:  curl -L -o output/lolc2_C2_data.json "https://raw.githubusercontent.com/lolc2/lolc2.github.io/refs/heads/main/c2_data.json"
+
+        # enesilhaydin - lothardware
+      - name: Download https://raw.githubusercontent.com/enesilhaydin/lothardware/refs/heads/main/hardwares.json
+        run:  curl -L -o output/enesilhaydin_hardwares.json "https://raw.githubusercontent.com/enesilhaydin/lothardware/refs/heads/main/hardwares.json"
+
+        # IEEE - IAB
+      - name: Download https://standards-oui.ieee.org/iab/iab.csv
+        run:  curl -L -o output/standards_oui_ieee_iab.csv "https://standards-oui.ieee.org/iab/iab.csv"
+
+        # IEEE - MANID
+      - name: Download https://standards-oui.ieee.org/manid/manid.csv
+        run:  curl -L -o output/standards_oui_ieee_manid.csv "https://standards-oui.ieee.org/manid/manid.csv"
+
+        # IEEE - IAB
+      - name: Download https://standards-oui.ieee.org/iab/iab.csv
+        run:  curl -L -o output/standards_oui_ieee_iab.csv "https://standards-oui.ieee.org/iab/iab.csv"
+
+        # IEEE - OUI36
+      - name: Download https://standards-oui.ieee.org/oui36/oui36.csv
+        run:  curl -L -o output/standards_oui_ieee_oui36.csv "https://standards-oui.ieee.org/oui36/oui36.csv"        
+
+        # IEEE - OUI
+      - name: Download https://standards-oui.ieee.org/oui/oui.csv
+        run:  curl -L -o output/standards_oui_ieee_oui.csv "https://standards-oui.ieee.org/oui/oui.csv"        
+
+        # IEEE - CID
+      - name: Download https://standards-oui.ieee.org/cid/cid.csv
+        run:  curl -L -o output/standards_oui_ieee_cid.csv "https://standards-oui.ieee.org/cid/cid.csv"          
+   
+        # IEEE - OPID
+      - name: Download https://standards-oui.ieee.org/opid/opid.csv
+        run:  curl -L -o output/standards_oui_ieee_opid.csv "https://standards-oui.ieee.org/opid/opid.csv"      
+
+        # LOTTUnnels - Domain list
+      - name: Download https://raw.githubusercontent.com/LOTTunnels/LOTTunnels.github.io/refs/heads/main/_lottunnels/CSVs/domains.csv
+        run:  curl -L -o output/lottunnels_domains.csv "https://raw.githubusercontent.com/LOTTunnels/LOTTunnels.github.io/refs/heads/main/_lottunnels/CSVs/domains.csv"      
+
+        # EPSS (Exploit Prediction Scoring System) - Daily Scores
+      - name: Download https://epss.cyentia.com/epss_scores-current.csv.gz
+        run: |
+          curl -L -o output/epss_scores.csv.gz "https://epss.cyentia.com/epss_scores-current.csv.gz"
+          gunzip -f output/epss_scores.csv.gz
+          rm -f output/epss_scores.csv.gz | true
+
+        # ExploitDB (Mapping CVE <-> Exploit Code)
+      - name: Download https://gitlab.com/exploit-database/exploitdb/-/raw/main/files_exploits.csv
+        run: curl -L -o output/exploitdb.csv "https://gitlab.com/exploit-database/exploitdb/-/raw/main/files_exploits.csv"
+
+        # OpenPhish - Community Feed (Free) - Updated frequently
+      - name: Download https://openphish.com/feed.txt
+        run: curl -L -o output/openphish_community.list "https://openphish.com/feed.txt"
+
+        # Disposable Email Domainsne)
+      - name: Download https://raw.githubusercontent.com/disposable-email-domains/disposable-email-domains/master/disposable_email_blocklist.conf
+        run: curl -L -o output/disposable_email_blocklist.list "https://raw.githubusercontent.com/disposable-email-domains/disposable-email-domains/master/disposable_email_blocklist.conf"
+
+      #  URLhaus (Abuse.ch) - Malware Distribution URLs
+      - name: Download https://urlhaus.abuse.ch/downloads/csv_online/
+        run: curl -L -o output/urlhaus_online.csv "https://urlhaus.abuse.ch/downloads/csv_online/"
+
+      #  Husky - Proton VPN 
+      - name: Download https://raw.githubusercontent.com/huzky-v/proton-vpn-server-list/refs/heads/main/output-group/all.json
+        run: curl -L -o output/protonvpn_all.json "https://raw.githubusercontent.com/huzky-v/proton-vpn-server-list/refs/heads/main/output-group/all.json"
+
+      #  Husky - Proton VPN 
+      - name: Download https://raw.githubusercontent.com/huzky-v/proton-vpn-server-list/refs/heads/main/output-group/all.json
+        run: curl -L -o output/protonvpn_all.json "https://raw.githubusercontent.com/huzky-v/proton-vpn-server-list/refs/heads/main/output-group/all.json"
+
+      #  IANA - Service/Port
+      - name: Download https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv
+        run: curl -L -o output/IANA_service_names_port_numbers.csv "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv"
+
+      #  Public Suffix
+      - name: Download https://publicsuffix.org/list/public_suffix_list.dat
+        run: curl -L -o output/public_suffix.list "https://publicsuffix.org/list/public_suffix_list.dat"
+
+      #  X4BNet VPN List (Automated aggregation)
+      - name: Download X4BNet VPN IP List
+        run: |
+          curl -f -L -o output/x4bnet_vpn_ipv4_list.list "https://raw.githubusercontent.com/X4BNet/lists_vpn/master/output/vpn/ipv4.txt"
+          curl -f -L -o output/x4bnet_vpn_datacenter_ipv4.list "https://raw.githubusercontent.com/X4BNet/lists_vpn/master/output/datacenter/ipv4.txt"
+        
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'          
+          git add .         
+          if git diff --staged --quiet; then
+            echo "No change"
+          else
+            git commit -m "chore: update refsets $(date +'%Y-%m-%d')"
+            git push
+          fi

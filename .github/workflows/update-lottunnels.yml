@@ -1,0 +1,106 @@
+name: Update LoTtunnels (JSON)
+
+on:
+  schedule:
+    - cron: '30 4 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-lottunnels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python Dependencies
+        run: pip install PyYAML
+
+      - name: Create Output Directory
+        run: mkdir -p output
+
+      - name: Download and Convert LoTtunnels
+        run: |
+          curl -L -o lottunnels.zip "https://github.com/LoTtunnels/LoTtunnels.github.io/archive/refs/heads/main.zip"
+          unzip -q lottunnels.zip
+          
+          python3 - <<EOF
+          import os
+          import yaml
+          import json
+          from datetime import date, datetime
+
+          def json_serial(obj):
+              if isinstance(obj, (date, datetime)):
+                  return obj.isoformat()
+              raise TypeError(f"Type {type(obj)} not serializable")
+
+          output_file = "output/lottunnels_binaries.json"
+          data_list = []
+          target_dir = None
+
+          for root, dirs, files in os.walk("."):
+              if "_lottunnels" in root and "Binaries" in dirs:
+                  target_dir = os.path.join(root, "Binaries")
+                  break
+              if "_lottunnels" in dirs:
+                  target_dir = os.path.join(root, "_lottunnels", "Binaries")
+                  break
+
+          if target_dir and os.path.exists(target_dir):
+              print(f"Target directory found: {target_dir}")
+              files = sorted(os.listdir(target_dir))
+              
+              for filename in files:
+                  if filename.endswith(".md"):
+                      filepath = os.path.join(target_dir, filename)
+                      try:
+                          with open(filepath, 'r', encoding='utf-8') as f:
+                              content = f.read()
+                              parts = content.split('---')
+                              
+                              if len(parts) >= 2:
+                                  yaml_text = parts[1]
+                                  entry = yaml.safe_load(yaml_text)
+                                  
+                                  if entry:
+                                      entry['source_file'] = filename
+                                      entry['url'] = f"https://lottunnels.github.io/lottunnels/{filename.replace('.md', '')}"
+                                      data_list.append(entry)
+                      except Exception as e:
+                          print(f"Skipping {filename} due to error: {e}")
+
+              with open(output_file, 'w', encoding='utf-8') as f:
+                  json.dump(data_list, f, indent=2, default=json_serial)
+              
+              print(f"Success: {len(data_list)} items saved to {output_file}")
+
+          else:
+              print("Critical Error: Could not locate '_lottunnels/Binaries' directory.")
+              for root, dirs, files in os.walk("."):
+                  print(root, dirs)
+              exit(1)
+          EOF
+
+          rm -rf LoTtunnels* lottunnels.zip
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          git add output/lottunnels_binaries.json
+          if git diff --staged --quiet; then
+            echo "No changes detected."
+          else
+            git commit -m "update refsets $(date +'%Y-%m-%d')"
+            git push
+            echo "Update completed."
+          fi

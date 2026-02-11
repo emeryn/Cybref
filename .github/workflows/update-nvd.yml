@@ -1,0 +1,49 @@
+name: Download NVD
+
+on:
+  schedule:
+    - cron: '30 21 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-nvd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+        # Ensure output directory exits
+      - name: Creating output directory
+        run: mkdir -p output
+
+      - name: NVD by year
+        run: curl -L -o output/nvdcve-2.0-2026.json.gz "https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-2026.json.gz"
+
+      - name: NVD Recent
+        run: |
+          curl -L -o output/nvdcve-2.0-recent.json.gz "https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-recent.json.gz"
+          curl -L -o output/nvdcve-2.0-modified.json.gz "https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-modified.json.gz"
+          gunzip -f output/nvdcve-2.0-recent.json.gz
+          gunzip -f output/nvdcve-2.0-modified.json.gz
+
+      - name: Old NVD 
+        run: |
+          for year in $(seq 2002 $(date +%Y))
+          do
+            curl -o "output/nvdce-2.0-${year}.json.gz" "https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-${year}.json.gz"
+          done
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'          
+          git add .      
+          if git diff --staged --quiet; then
+            echo "No change"
+          else
+            git commit -m "chore: update refsets $(date +'%Y-%m-%d')"
+            git push
+          fi

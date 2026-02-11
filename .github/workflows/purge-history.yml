@@ -1,0 +1,29 @@
+name: Purge Repository History
+
+on:
+  schedule:
+    - cron: '0 23 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reset-history:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+
+      - name: Reset History (Orphan Branch)
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git checkout --orphan temp_branch
+          git add -A
+          git commit -m "hitory purge: clean state $(date +'%Y-%m-%d')"
+          git branch -D main
+          git branch -m main
+          git push -f origin main

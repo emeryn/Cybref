@@ -1,0 +1,122 @@
+name: Update MALAPI (CSV)
+
+on:
+  schedule:
+    - cron: '30 17 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-lottunnels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python Dependencies
+        run: pip install PyYAML
+
+      - name: Create Output Directory
+        run: mkdir -p output
+
+      - name: Process MalAPI.io
+        run: |
+          echo "Processing MalAPI..."
+          pip install beautifulsoup4 requests
+
+          python3 - <<EOF
+          import requests
+          from bs4 import BeautifulSoup
+          import csv
+          import sys
+
+          url = "https://malapi.io/"
+          output_file = "output/malapi_windows_apis.csv"
+
+          headers_http = {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+          }
+
+          try:
+              response = requests.get(url, headers=headers_http, timeout=15)
+              response.raise_for_status()
+              soup = BeautifulSoup(response.content, 'html.parser')
+              main_table = soup.find('table', id='main-table')
+              if not main_table:
+                  print("⚠️ Warning: Table 'main-table' not found")
+                  sys.exit(0)
+              headers = []
+              for th in main_table.find_all('th'):
+                  text = th.get_text(strip=True)
+                  if text:
+                      headers.append(text)
+              data_columns = []
+              tbody = main_table.find('tbody', id='scrollable-table-body')
+              if tbody:
+                  for tr in tbody.find_all('tr'):
+                      tds = tr.find_all('td', recursive=False)
+                      if tds:
+                          data_columns = tds
+                          break
+              
+              if len(headers) != len(data_columns):
+                  print(f"⚠️ Mismatch: {len(headers)} categories vs {len(data_columns)} columns. Trying best effort.")
+
+              final_rows = []
+              
+              for index, col in enumerate(data_columns):
+                  if index < len(headers):
+                      category = headers[index]
+                  else:
+                      category = "Unknown"
+
+                  for link in col.find_all('a'):
+                      api_name = link.get_text(strip=True)
+                      details_url = link.get('href')
+                      
+                      if api_name:
+                          full_url = f"https://malapi.io{details_url}" if details_url.startswith('/') else details_url
+                          
+                          final_rows.append({
+                              "API": api_name,
+                              "Category": category,
+                              "Description_URL": full_url
+                          })
+
+              csv_headers = ["API", "Category", "Description_URL"]
+              
+              final_rows.sort(key=lambda x: x['API'])
+
+              with open(output_file, 'w', newline='', encoding='utf-8') as f:
+                  writer = csv.DictWriter(f, fieldnames=csv_headers)
+                  writer.writeheader()
+                  writer.writerows(final_rows)
+              
+              print(f"✅ Success: {len(final_rows)} Windows APIs extracted to {output_file}")
+
+          except Exception as e:
+              print(f"❌ Error scraping MalAPI: {e}")
+              sys.exit(0)
+          EOF
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          git add output/malapi_windows_apis.csv
+          
+          if git diff --staged --quiet; then
+            echo "No changes detected."
+          else
+            git commit -m "update refsets $(date +'%Y-%m-%d')"
+            git push
+            echo "Update completed."
+          fi
