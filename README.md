@@ -2,15 +2,20 @@
 
 Automated daily mirror and aggregator of critical cybersecurity datasets. This project is designed to provide **simplified access** to reference lists, Threat Intelligence feeds, and "Living Off The Land" (LOL) binaries.
 
+## ⚠️ Important Notice: Repository Reset
+To maintain a lightweight repository size despite massive daily JSON datasets, **the git history is reset (force-pushed) every Sunday night**.
+* **Previous versions are discarded.**
+* If you clone this repository, you may need to run `git fetch --all && git reset --hard origin/main` or re-clone it weekly.
 
-## 🔄 Automation Overview
+## 🔄 Automation & Data Engineering
 
-To ensure data freshness while respecting source limitations, updates are split into several workflows:
-
+To maintain high data integrity while respecting source constraints, the repository uses specialized GitHub Actions workflows:
 * **Daily Updates:** High-churn IOCs (IPs, Domains, Hashes), CISA KEV, and EPSS scores.
-* **Weekly Updates (Sundays):** Large databases (GitHub Advisories, NVD full history) and website scraping (LOTS Project, MalAPI.io).
-* **Format:** All data is normalized into **JSON** or **CSV** within the `output/` directory for easy parsing.
-
+* **Weekly Updates:** Large databases (GitHub Advisories, NVD full history) and website scraping (LOTS Project, MalAPI.io).
+* **Smart Processing:**
+    * **Compression:** Large datasets (like NVD or CPE dictionaries) are **GZIP-compressed (`.gz`)** to optimize bandwidth and storage.
+    * **NVD CPE 2.0:** Automatically merges disjointed JSON chunks into a single Master Dictionary.
+    * **Scraping:** Converts HTML tables from reference sites into machine-readable CSVs.
 ---
 
 ## 📂 Dataset Catalog
