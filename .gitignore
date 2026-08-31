@@ -1,0 +1,4 @@
+mcb/.venv/
+__pycache__/
+*.py[cod]
+mcb/uv.lock
