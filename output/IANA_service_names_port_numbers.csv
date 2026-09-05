@@ -9867,7 +9867,7 @@ psl-management,5507,tcp,PowerSysLab Electrical Management,[PowerSysLab],[Lucas_L
 matter,5540,tcp,Matter Operational Discovery and Communi,[Connectivity_Standards_Alliance],[Aron_Rosenberg],2021-07-16,,,,,
 matter,5540,udp,Matter Operational Discovery and Communi,[Connectivity_Standards_Alliance],[Aron_Rosenberg],2021-07-16,,,,,
 ,5541-5542,,Unassigned,,,,,,,,
-qftest-licserve,5543,tcp,QF-Test License Server,[Quality_First_Software_GmbH],[Gregor_Schmid],2024-01-05,,,,,
+qftest-lic-mcp,5543,tcp,QF-Test License Server / QF-Test MCP Server,[Quality_First_Software_GmbH],[Gregor_Schmid],2024-01-05,2026-09-04,,,,
 ,5543,udp,Reserved,,,,,,,,
 ,5544-5549,,Unassigned,,,,,,,,
 cbus,5550,tcp,Model Railway control using the CBUS message protocol,[MERG],[Pete_Brownlow],2017-01-03,,,,,
@@ -14536,6 +14536,7 @@ enphase-envoy,,tcp,Enphase Energy Envoy,[Enphase_Energy_Inc],[Chris_Eich],2011-1
       - protovers
       - serialnum"
 ep,,,Endpoint Protocol (EP) for use in Home Automation systems,[Tommy_van_der_Vorst],[Tommy_van_der_Vorst],,,,,,Defined TXT keys: dns-sd_mdns
+esiur,,tcp,Esiur distributed resource protocol,[Ahmed_Kh_Zamil],[Ahmed_Kh_Zamil],2026-09-02,,,,,Defined TXT keys: None
 esp,,tcp,Extensis Server Protocol,[Loren_Barr],[Loren_Barr],2006-12,,,,,Defined TXT keys: none
 est,,tcp,Enrollment Over Secure Transport,[Jack_Visoky],[Jack_Visoky],2017-10-06,,,,,[RFC7030]. Defined TXT keys: None
 est-coaps,,udp,EST over secure CoAP (EST-coaps),[Toerless_Eckert_3],[Toerless_Eckert_3],2022-05-03,2022-05-04,,,,[RFC9148]. Defined TXT keys: None
@@ -15089,6 +15090,7 @@ scoop-sftp,,udp,The service name is used by the SFTP protocol to upload log file
 scpi-raw,,,IEEE 488.2 (SCPI) Socket,[Nick_Barendt_3],[Nick_Barendt_3],,,,,,Defined TXT keys: None
 scpi-telnet,,,IEEE 488.2 (SCPI) Telnet,[Nick_Barendt_3],[Nick_Barendt_3],,,,,,Defined TXT keys: None
 sdsharing,,,Speed Download,[Yazsoft],[Yazsoft],,,,,,Defined TXT keys: None
+secugen-connect,,tcp,SecuGen Connect local biometric bridge,[SecuGen_Corporation],[SecuGen_Corporation],2026-09-04,,,,,Defined TXT keys: None
 see,,,SubEthaEdit 2,[TheCodingMonkeys],[TheCodingMonkeys],,,,,,"Defined TXT keys: txtvers=1, name=<Full Name>, userid=<User ID>, version=2"
 seeCard,,,seeCard,[Stefan_Pantke],[Stefan_Pantke],,,,,,Defined TXT keys: None
 senteo-http,,,Senteo Assessment Software Protocol,[Michael_Boyle],[Michael_Boyle],,,,,,Defined TXT keys: None
@@ -15133,7 +15135,7 @@ slpda,,tcp,Remote Service Discovery in the Service Location,,,,,[RFC3832],,,
 slpda,,udp,Remote Service Discovery in the Service Location,,,,,[RFC3832],,,
 smag,,tcp,terminal access to laundry appliances,[Schulthess_Maschinen_AG],[Michael_Schwetz],2018-11-30,,,,,"Defined TXT keys: mName, tName, lName, Type, Timestamp"
 smaho,,tcp,Smart Home Device Setup,[SMAHO],[Max_Köhler],2021-11-15,,,,,"Defined TXT keys: mo, ma, fw, hw, na, id"
-smartenergy,,,Smart Energy Profile,[Robby_Simpson],[Robby_Simpson],,,,,,Defined TXT keys: See http://www.zigbee.org/SmartEnergy
+smartenergy,,,Smart Energy Profile,[Robby_Simpson],[Robby_Simpson],,2026-09-01,,,,Defined TXT keys: See IEEE Std 2030.5
 smartsocket,,tcp,home control,[Robert_Diamond],[Robert_Diamond],2012-07-06,,,,,Defined TXT keys: None
 smb,,,Server Message Block over TCP/IP,,,,,,,,Defined TXT keys: u=<username> p=<password> path=<path>
 smimeca,,tcp,Domain signing certificate for S/MIME keys,[IESG],[John_Levine],2016-07-26,,[draft-bhjl-x509-srv-01],,,Defined TXT keys: None
