@@ -12995,7 +12995,7 @@ rdgs,16385,tcp,Reliable Datagram Sockets,[Oracle_7],[Sowmini_Varadhan],2015-04-3
 xoms,16619,tcp,X509 Objects Management Service,[Francis_GASCHET],[Francis_GASCHET],2008-09-08,,,,,
 ,16619,udp,Reserved,,,,,,,,
 ,16620-16664,,Unassigned,,,,,,,,
-axon-tunnel,16665,tcp,Reliable multipath data transport for high latencies,[Bridgeworks],[Paul_Burgess],2014-09-26,,,,,
+axon-tunnel,16665,tcp,Reliable multipath data transport for high latencies,[Bridgeworks],[Mihai_Popa],2014-09-26,2026-09-11,,,,
 ,16665,udp,Reserved,,,,,,,,
 ,16666,tcp,Reserved,,,,,,,,
 vtp,16666,udp,Vidder Tunnel Protocol,[Vidder_Inc],[Ted_Schroeder_2],2011-10-24,,,,,
@@ -15090,7 +15090,7 @@ scoop-sftp,,udp,The service name is used by the SFTP protocol to upload log file
 scpi-raw,,,IEEE 488.2 (SCPI) Socket,[Nick_Barendt_3],[Nick_Barendt_3],,,,,,Defined TXT keys: None
 scpi-telnet,,,IEEE 488.2 (SCPI) Telnet,[Nick_Barendt_3],[Nick_Barendt_3],,,,,,Defined TXT keys: None
 sdsharing,,,Speed Download,[Yazsoft],[Yazsoft],,,,,,Defined TXT keys: None
-secugen-connect,,tcp,SecuGen Connect local biometric bridge,[SecuGen_Corporation],[SecuGen_Corporation],2026-09-04,,,,,Defined TXT keys: None
+secugen-connect,,tcp,SecuGen Connect local biometric bridge,[SecuGen_Corporation],[SecuGen_Corporation],2026-09-04,2026-09-07,[https://connect.secugen.com/dev-guide-doc/bridge-api-contract],,,Defined TXT keys: None
 see,,,SubEthaEdit 2,[TheCodingMonkeys],[TheCodingMonkeys],,,,,,"Defined TXT keys: txtvers=1, name=<Full Name>, userid=<User ID>, version=2"
 seeCard,,,seeCard,[Stefan_Pantke],[Stefan_Pantke],,,,,,Defined TXT keys: None
 senteo-http,,,Senteo Assessment Software Protocol,[Michael_Boyle],[Michael_Boyle],,,,,,Defined TXT keys: None
