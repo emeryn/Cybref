@@ -329,6 +329,238 @@
     "acknowledgements": []
   },
   {
+    "name": "diskutil",
+    "author": "Hare Sudhan (@cyb3rbuff)",
+    "short_description": "Enumerate, mount, erase and manipulate local disks, APFS containers and volumes.",
+    "full_description": "diskutil is the macOS command-line front end for local disk management. It lists physical and virtual disks, reports partition maps and APFS container layouts, mounts and unmounts volumes, manages APFS cryptographic users and FileVault state, lists and deletes APFS snapshots, and erases volumes, containers and whole disks. Its read-only verbs run without privileges and describe the entire storage topology of a host, including attached external and backup media and which volumes are encrypted. Its write verbs require ownership of the target disk, which in practice means root, and are irreversible - the man page itself warns that most of them present no confirmation prompt. That combination makes diskutil useful to an attacker at both ends of an intrusion - for storage reconnaissance early on, and for anti-forensics, recovery inhibition and destruction at the end. The utility also exposes mount options directly via -mountOptions, which diskarbitrationd passes verbatim to the filesystem mount program; this was the basis of CVE-2023-42931. Existing detection coverage for noowners mounts, such as Elastic's TCC-bypass rule and Jamf Protect's AUE_MOUNT telemetry correlation, matches on mount_apfs, the helper diskarbitrationd invokes to perform the mount - not on diskutil itself, since diskutil only requests the mount and exits. A rule written against mount_apfs will not fire on the diskutil invocation that triggered it, so detecting this technique from diskutil activity requires new coverage keyed on diskutil's own command-line arguments rather than the downstream mount_apfs process.",
+    "created": "2026-09-20",
+    "example_use_cases": [
+      {
+        "name": "List whole disks and partitions",
+        "description": "The list verb requires no privileges and returns every whole disk and partition, whether each disk is internal or external and physical or virtual, with their mount points. The -plist option makes the output machine-parsable, so it is usable directly from a dropper. This shows an attacker where storage lives and which disks are removable and worth watching for.",
+        "code": "diskutil list -plist external",
+        "tactics": [
+          "Discovery"
+        ],
+        "tags": [
+          "disk",
+          "enumeration"
+        ]
+      },
+      {
+        "name": "Enumerate APFS containers and volumes",
+        "description": "The apfs list verb enumerates every APFS container and its volumes, including their roles (the S/System, D/Data and T/Backup Time Machine roles) and mount points, without privileges. This maps the logical volume layout of the host and identifies the Data and backup volumes that hold user content. -plist makes the output machine-parsable.",
+        "code": "diskutil apfs list -plist",
+        "tactics": [
+          "Discovery"
+        ],
+        "tags": [
+          "apfs",
+          "enumeration"
+        ]
+      },
+      {
+        "name": "Read per-disk detail and FileVault encryption state",
+        "description": "The info verb reports the full detail of a disk or volume, and with -all covers every disk on the host, including whether each volume is FileVault-encrypted. This tells an attacker which volumes are protected before anything destructive or collection-oriented is attempted. It needs no privileges, and -plist makes the output machine-parsable.",
+        "code": "diskutil info -plist -all",
+        "tactics": [
+          "Discovery"
+        ],
+        "tags": [
+          "disk",
+          "filevault"
+        ]
+      },
+      {
+        "name": "Enumerate APFS cryptographic users to map FileVault-enabled accounts",
+        "description": "apfs listCryptoUsers shows every cryptographic user associated with an APFS volume by UUID and type, distinguishing the per-volume Disk user, personal and iCloud Recovery Keys, and Open Directory users - the latter's UUIDs match the local account GUIDs visible through dscl, so this maps which local accounts are FileVault-enabled. It is a read-only query that needs no privileges.",
+        "code": "diskutil apfs listCryptoUsers -plist <VOLUME_DEVICE>",
+        "tactics": [
+          "Discovery"
+        ],
+        "tags": [
+          "filevault",
+          "enumeration"
+        ]
+      },
+      {
+        "name": "Test a candidate FileVault passphrase without changing lock state",
+        "description": "apfs unlockVolume with -verify tests a candidate passphrase for a chosen cryptographic user without changing the volume's locked or unlocked state, giving an on-host oracle for credentials harvested elsewhere. Passing -passphrase places the secret in the process argument list where it is visible to any process listing and to endpoint telemetry; -stdinpassphrase keeps it off argv. Ownership of the affected disk is required.",
+        "code": "echo '<PASSPHRASE>' | diskutil apfs unlockVolume <VOLUME_DEVICE> -user <CRYPTO_USER_UUID> -stdinpassphrase -verify",
+        "tactics": [
+          "Credential Access"
+        ],
+        "tags": [
+          "filevault",
+          "passphrase"
+        ]
+      },
+      {
+        "name": "Mount a volume with noowners to read or tamper with root-owned files (CVE-2023-42931)",
+        "description": "diskutil mount accepts arbitrary mount options through -mountOptions, which diskarbitrationd passes verbatim to the filesystem's mount program. The noowners option makes every object on the volume appear owned by the calling user, so root-owned files that are not protected by SIP become attacker-writable. Yann Gascuel of Alter Solutions showed that a local user - including a guest - could mount internal storage this way, overwrite a non-SIP-protected root-owned placeholder file with a setuid payload, then remount normally so that the file regained its root ownership and ran as root. Apple tracks this as CVE-2023-42931 in DiskArbitration and fixed it in macOS Monterey 12.7.2, Ventura 13.6.3 and Sonoma 14.2 by ignoring noowners when mounting internal storage; the option still applies to external media. Adding nobrowse and -mountPoint keeps the mount out of Finder and off /Volumes, which is why mounting a volume at a chosen path is also useful for reaching data without the usual UI indication.",
+        "code": "diskutil mount nobrowse -mountOptions noowners -mountPoint <MOUNT_PATH> <DEVICE>",
+        "tactics": [
+          "Privilege Escalation",
+          "Defense Evasion",
+          "Collection"
+        ],
+        "tags": [
+          "noowners",
+          "cve-2023-42931"
+        ]
+      },
+      {
+        "name": "Overwrite free space to destroy deleted-file remnants",
+        "description": "secureErase freespace overwrites the unallocated space of a mounted volume, leaving existing files untouched while destroying the remnants of deleted files that forensic recovery depends on. Level selects the pattern - 0 single-pass zero fill, 1 single-pass random fill, 2 a seven-pass fill, 3 the 35-pass Gutmann algorithm, and 4 a three-pass fill. Ownership of the affected disk is required. OSX/Filecoder.E, the 2017 \"Patcher\" ransomware analysed by ESET, ran this after encrypting files to null the root partition's free space; the sample failed only because it hardcoded /usr/bin/diskutil, which does not exist - diskutil lives in /usr/sbin. Two honest constraints apply on current systems - the verb refuses APFS volumes, reporting that a byte-run erase \"makes no sense due to its possibly-unbounded size\" (-69489), so it is limited to HFS+, ExFAT and other fixed-size volumes rather than a modern boot volume, and on SSDs wear levelling and block sparing mean overwritten blocks may survive regardless.",
+        "code": "diskutil secureErase freespace 0 /Volumes/<VOLUME_NAME>",
+        "tactics": [
+          "Defense Evasion",
+          "Impact"
+        ],
+        "tags": [
+          "secureerase",
+          "anti-forensics"
+        ]
+      },
+      {
+        "name": "Zero a disk to destroy filesystem identification",
+        "description": "zeroDisk writes zeros over a disk or partition, and its short parameter writes only enough zeros to destroy filesystem identification, which is fast enough to be practical against several disks in sequence. The force parameter attempts non-error-terminating forced unmounts and shared-mode writes, though the man page notes this is no guarantee against drivers holding a disk exclusively. Ownership of the affected disk is required.",
+        "code": "diskutil zeroDisk force short /dev/<DISK>",
+        "tactics": [
+          "Impact"
+        ],
+        "tags": [
+          "wiper",
+          "disk"
+        ]
+      },
+      {
+        "name": "Erase a whole disk or volume",
+        "description": "eraseDisk rewrites a whole disk's partition map and leaves a single empty volume, while eraseVolume and reformat destroy an individual volume's contents. Ownership of the affected disk is required, and the man page warns the operation presents no confirmation prompt. Locating Time Machine and external disks first with apfs list makes backup media the obvious target.",
+        "code": "diskutil eraseDisk JHFS+ Untitled <DISK>",
+        "tactics": [
+          "Impact"
+        ],
+        "tags": [
+          "wiper",
+          "disk"
+        ]
+      },
+      {
+        "name": "Destroy an APFS container and all its volumes",
+        "description": "apfs deleteContainer destroys an entire APFS container and every volume in it, while apfs deleteVolume and apfs deleteVolumeGroup remove individual APFS volumes and their Preboot and Recovery entries. Ownership of the affected disk is required, and the deletion is irreversible.",
+        "code": "diskutil apfs deleteContainer <CONTAINER_DEVICE>",
+        "tactics": [
+          "Impact"
+        ],
+        "tags": [
+          "wiper",
+          "apfs"
+        ]
+      },
+      {
+        "name": "Enumerate APFS snapshots on a volume",
+        "description": "apfs listSnapshots enumerates every local APFS snapshot on a volume with its name, UUID and numeric XID. Time Machine writes these snapshots to the volumes it protects, and they are the fastest way to roll a machine back after file encryption or destructive tampering, so listing them is the reconnaissance step before removing them. It is a read-only query.",
+        "code": "diskutil apfs listSnapshots -plist <VOLUME_DEVICE>",
+        "tactics": [
+          "Discovery"
+        ],
+        "tags": [
+          "snapshot",
+          "enumeration"
+        ]
+      },
+      {
+        "name": "Delete an APFS snapshot to inhibit system recovery",
+        "description": "apfs deleteSnapshot removes a chosen local APFS snapshot, permanently giving up the ability to restore the volume to that point. Deletion runs in the background unless -wait is given. Ownership of the affected disk is required. Removing snapshots leaves present-day file content untouched, so the volume looks normal until a restore is attempted.",
+        "code": "diskutil apfs deleteSnapshot <VOLUME_DEVICE> -name <SNAPSHOT_NAME> -wait",
+        "tactics": [
+          "Impact"
+        ],
+        "tags": [
+          "snapshot",
+          "inhibit-recovery"
+        ]
+      }
+    ],
+    "paths": [
+      "/usr/sbin/diskutil"
+    ],
+    "detections": [
+      {
+        "name": "Command-line detection: destructive verb invocation (secureErase, zeroDisk, eraseDisk, eraseVolume, reformat, apfs deleteVolume/deleteVolumeGroup/deleteContainer)",
+        "url": "N/A"
+      },
+      {
+        "name": "Command-line detection: mount with -mountOptions containing noowners or nosuid, or -mountPoint outside /Volumes",
+        "url": "N/A"
+      },
+      {
+        "name": "Command-line detection: apfs deleteSnapshot, correlated with tmutil deletelocalsnapshots",
+        "url": "N/A"
+      },
+      {
+        "name": "Command-line detection: apfs unlockVolume or changePassphrase with a passphrase value in argv",
+        "url": "N/A"
+      }
+    ],
+    "resources": [
+      {
+        "name": "diskutil(8) manual page",
+        "url": "https://keith.github.io/xcode-man-pages/diskutil.8.html"
+      },
+      {
+        "name": "ESET: New crypto-ransomware hits macOS (OSX/Filecoder.E)",
+        "url": "https://www.welivesecurity.com/2017/02/22/new-crypto-ransomware-hits-macos/"
+      },
+      {
+        "name": "Objective-See: Mac Malware of 2017",
+        "url": "https://objective-see.org/blog/blog_0x25.html"
+      },
+      {
+        "name": "Apple: About the security content of macOS Sonoma 14.2 (CVE-2023-42931, DiskArbitration)",
+        "url": "https://support.apple.com/en-us/120879"
+      },
+      {
+        "name": "SOC Prime: CVE-2023-42931 Detection - macOS privilege escalation via diskutil mount options",
+        "url": "https://socprime.com/blog/cve-2023-42931-detection-critical-macos-vulnerability-enabling-easy-privilege-escalation-and-root-access/"
+      },
+      {
+        "name": "HACKHUNTING: Easy Root Privilege Escalation in Apple macOS Ventura, Sonoma, Monterey - CVE-2023-42931",
+        "url": "https://hackhunting.wordpress.com/2024/04/05/easy-root-privilege-escalation-in-apple-macos-ventura-sonoma-monterey-cve-2023-42931/"
+      },
+      {
+        "name": "The Eclectic Light Company: Disk Utility 18.0 (Mojave) - what the GUI secure erase options actually do",
+        "url": "https://eclecticlight.co/2018/12/17/disk-utility-18-0-mojave-not-exactly-the-truth/"
+      },
+      {
+        "name": "Apple Support Communities: secureErase freespace rejected on an APFS volume (-69489)",
+        "url": "https://discussions.apple.com/thread/250795166"
+      },
+      {
+        "name": "MITRE ATT&CK T1485 Data Destruction",
+        "url": "https://attack.mitre.org/techniques/T1485/"
+      },
+      {
+        "name": "MITRE ATT&CK T1490 Inhibit System Recovery",
+        "url": "https://attack.mitre.org/techniques/T1490/"
+      },
+      {
+        "name": "MITRE ATT&CK T1561.001 Disk Wipe: Disk Content Wipe",
+        "url": "https://attack.mitre.org/techniques/T1561/001/"
+      },
+      {
+        "name": "MITRE ATT&CK T1006 Direct Volume Access",
+        "url": "https://attack.mitre.org/techniques/T1006/"
+      }
+    ],
+    "acknowledgements": [
+      "Yann Gascuel (Alter Solutions) - discovery of CVE-2023-42931, privilege escalation via diskutil mount options",
+      "ESET Research - analysis of OSX/Filecoder.E and its use of diskutil secureErase freespace",
+      "Patrick Wardle (Objective-See) - published the embedded diskutil secureErase freespace strings from the Filecoder.E sample"
+    ]
+  },
+  {
     "name": "disown",
     "author": "Gabriel De Jesus (0xv1n)",
     "short_description": "Prevents a process from being terminated when a shell session or terminal is closed.",
@@ -1176,6 +1408,100 @@
     "acknowledgements": []
   },
   {
+    "name": "killall",
+    "author": "Jason Phang Vern - Onn",
+    "short_description": "Kill processes by name.",
+    "full_description": "killall is a built-in macOS utility that sends signals to processes selected by name. Although intended for legitimate process management, macOS malware has abused killall to terminate Terminal sessions, conceal malicious command execution, and repeatedly stop user-interface processes such as Finder, Dock, SystemUIServer, and NotificationCenter. This can disrupt normal desktop operation, suppress visible notifications, and force victims to continue an attacker-controlled interaction flow.",
+    "created": "2026-07-26",
+    "example_use_cases": [
+      {
+        "name": "Terminate Terminal to conceal malicious execution",
+        "description": "Terminate running Terminal processes after malicious commands have been launched, reducing visible evidence of execution and interfering with manual analysis.",
+        "code": "killall Terminal",
+        "tactics": [
+          "Defense Evasion"
+        ],
+        "tags": [
+          "processes",
+          "terminal",
+          "evasion"
+        ]
+      },
+      {
+        "name": "Repeatedly disrupt macOS user-interface processes",
+        "description": "Repeatedly terminate macOS user-interface processes at short intervals to disrupt normal desktop operation and force the victim to continue an attacker-controlled interaction flow.",
+        "code": "while true; do killall Finder Dock SystemUIServer NotificationCenter 2>/dev/null; sleep 0.1; done",
+        "tactics": [
+          "Impact",
+          "Defense Evasion"
+        ],
+        "tags": [
+          "processes",
+          "user-interface",
+          "disruption"
+        ]
+      },
+      {
+        "name": "Suppress Notification Center",
+        "description": "Repeatedly terminate NotificationCenter to interfere with the display of macOS notifications.",
+        "code": "killall NotificationCenter",
+        "tactics": [
+          "Defense Evasion",
+          "Impact"
+        ],
+        "tags": [
+          "notifications",
+          "processes"
+        ]
+      },
+      {
+        "name": "Forcefully terminate a named process",
+        "description": "Send SIGKILL to immediately terminate processes that may ignore the default termination signal.",
+        "code": "killall -9 Terminal",
+        "tactics": [
+          "Defense Evasion",
+          "Impact"
+        ],
+        "tags": [
+          "processes",
+          "sigkill"
+        ]
+      }
+    ],
+    "paths": [
+      "/usr/bin/killall"
+    ],
+    "detections": [
+      {
+        "name": "Process execution monitoring for killall",
+        "url": "N/A"
+      },
+      {
+        "name": "Detect repeated killall execution targeting macOS user-interface processes",
+        "url": "N/A"
+      }
+    ],
+    "resources": [
+      {
+        "name": "Banshee: The Stealer That Stole Code From macOS XProtect",
+        "url": "https://research.checkpoint.com/2025/banshee-macos-stealer-that-stole-code-from-macos-xprotect/"
+      },
+      {
+        "name": "ClickLock Stealer: Paste Once, Lose Everything",
+        "url": "https://www.group-ib.com/blog/clicklock-stealer-macos-malware/"
+      },
+      {
+        "name": "Say My Name: How MioLab is Building a macOS Stealer Empire",
+        "url": "https://www.levelblue.com/blogs/spiderlabs-blog/say-my-name-how-miolab-is-building-macos-stealer-empire"
+      },
+      {
+        "name": "Proton.B: What This Mac Malware Actually Does",
+        "url": "https://www.cybereason.com/blog/labs-proton-b-what-this-mac-malware-actually-does"
+      }
+    ],
+    "acknowledgements": []
+  },
+  {
     "name": "last",
     "author": "Will Huang (@In0de_16)",
     "short_description": "Show last user logins and TTYs.",
@@ -1296,6 +1622,124 @@
       {
         "name": "Komplex OS X Trojan (Sofacy)",
         "url": "https://unit42.paloaltonetworks.com/unit42-sofacys-komplex-os-x-trojan/"
+      }
+    ],
+    "acknowledgements": []
+  },
+  {
+    "name": "ldapsearch",
+    "author": "Hare Sudhan (@cyb3rbuff)",
+    "short_description": "Query LDAP and Active Directory servers for directory objects and attributes.",
+    "full_description": "ldapsearch is the OpenLDAP command-line search client shipped in the base macOS image. It opens a connection to an LDAP server, binds either anonymously, with simple credentials, or over SASL, and returns matching directory entries as LDIF. On a Mac that is bound to Active Directory, or on any host that can reach a domain controller, it is a native way to enumerate the directory - users, groups, computers, service principal names, and account control flags - using either credentials supplied on the command line or the host's existing Kerberos ticket. Because it is already present and signed by Apple, an operator can perform the reconnaissance that would otherwise require dropping a dedicated collector to disk.",
+    "created": "2026-09-20",
+    "example_use_cases": [
+      {
+        "name": "Enumerate directory users with a simple bind",
+        "description": "With a valid set of domain credentials (or against a server that permits anonymous binds), ldapsearch performs a subtree search from the domain naming context and returns account objects and their attributes. This maps usernames, descriptions, and group memberships without touching any Windows tooling. It requires network reach to the LDAP port (389) on a domain controller and, on most Active Directory deployments, valid credentials because anonymous binds are disabled by default.",
+        "code": "ldapsearch -x -H ldap://<DC_IP> -D \"<USER>@<DOMAIN>\" -w '<PASSWORD>' -b \"DC=<DOMAIN>,DC=<TLD>\" -LLL \"(objectClass=user)\" sAMAccountName description memberOf",
+        "tactics": [
+          "Discovery"
+        ],
+        "tags": [
+          "ldap",
+          "active-directory",
+          "domain-enumeration"
+        ]
+      },
+      {
+        "name": "Enumerate the directory using the host Kerberos ticket",
+        "description": "The -Y GSSAPI option authenticates the bind with the SASL GSSAPI mechanism, which uses the Kerberos credential cache of the current user instead of a password. On an Active-Directory-bound Mac, or on a host where the user already holds a valid ticket-granting ticket, this enumerates the directory with no password on the command line and no separate credential capture. -Q keeps SASL from prompting.",
+        "code": "ldapsearch -Y GSSAPI -Q -H ldap://<DC_IP> -b \"DC=<DOMAIN>,DC=<TLD>\" -LLL \"(objectClass=computer)\" dNSHostName operatingSystem",
+        "tactics": [
+          "Discovery"
+        ],
+        "tags": [
+          "ldap",
+          "kerberos",
+          "gssapi"
+        ]
+      },
+      {
+        "name": "Identify Kerberoastable service accounts",
+        "description": "An LDAP filter that matches user objects carrying a servicePrincipalName returns the accounts whose Kerberos service tickets can be requested and cracked offline (Kerberoasting). ldapsearch surfaces these targets directly from the directory. It needs a valid bind and the servicePrincipalName attribute is a standard Active Directory attribute.",
+        "code": "ldapsearch -x -H ldap://<DC_IP> -D \"<USER>@<DOMAIN>\" -w '<PASSWORD>' -b \"DC=<DOMAIN>,DC=<TLD>\" -LLL \"(&(objectClass=user)(servicePrincipalName=*))\" sAMAccountName servicePrincipalName",
+        "tactics": [
+          "Credential Access",
+          "Discovery"
+        ],
+        "tags": [
+          "ldap",
+          "kerberoasting",
+          "active-directory"
+        ]
+      },
+      {
+        "name": "Identify AS-REP roastable accounts",
+        "description": "The userAccountControl bitwise filter (matching rule OID 1.2.840.113556.1.4.803) with the value 4194304 selects accounts that do not require Kerberos pre-authentication. For those accounts an AS-REP hash can be requested without knowing the password and cracked offline (AS-REP roasting). ldapsearch returns the candidate list from a single query with a valid bind.",
+        "code": "ldapsearch -x -H ldap://<DC_IP> -D \"<USER>@<DOMAIN>\" -w '<PASSWORD>' -b \"DC=<DOMAIN>,DC=<TLD>\" -LLL \"(&(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=4194304))\" sAMAccountName",
+        "tactics": [
+          "Credential Access",
+          "Discovery"
+        ],
+        "tags": [
+          "ldap",
+          "asrep-roasting",
+          "active-directory"
+        ]
+      },
+      {
+        "name": "Bulk-dump the directory to a file with paged results",
+        "description": "The -E pr search extension requests LDAP paged results, which lets a single query retrieve the entire directory past the server's default result cap. Writing the LDIF to a file stages a full offline copy of the directory for later analysis. It requires a valid bind and read access to the objects returned.",
+        "code": "ldapsearch -x -H ldap://<DC_IP> -D \"<USER>@<DOMAIN>\" -w '<PASSWORD>' -b \"DC=<DOMAIN>,DC=<TLD>\" -LLL -E pr=1000/noprompt \"(objectClass=*)\" > /tmp/dirdump.ldif",
+        "tactics": [
+          "Discovery",
+          "Collection"
+        ],
+        "tags": [
+          "ldap",
+          "active-directory",
+          "paged-results"
+        ]
+      },
+      {
+        "name": "Read LAPS local administrator passwords",
+        "description": "Where Microsoft LAPS is deployed, the local administrator password is stored on the computer object in the ms-Mcs-AdmPwd attribute. ldapsearch reads it directly when the bound account has been delegated read access to that attribute - a common privilege-escalation path when a compromised account or group holds LAPS read rights it should not. The attribute returns empty for principals without the delegated permission.",
+        "code": "ldapsearch -x -H ldap://<DC_IP> -D \"<USER>@<DOMAIN>\" -w '<PASSWORD>' -b \"DC=<DOMAIN>,DC=<TLD>\" -LLL \"(objectClass=computer)\" ms-Mcs-AdmPwd ms-Mcs-AdmPwdExpirationTime",
+        "tactics": [
+          "Credential Access"
+        ],
+        "tags": [
+          "ldap",
+          "laps",
+          "active-directory"
+        ]
+      }
+    ],
+    "paths": [
+      "/usr/bin/ldapsearch"
+    ],
+    "detections": [
+      {
+        "name": "Command-line detection: /usr/bin/ldapsearch invoked with directory-recon filters (servicePrincipalName=*, userAccountControl bitwise filters, objectClass=user/computer against a domain naming context)",
+        "url": "N/A"
+      }
+    ],
+    "resources": [
+      {
+        "name": "ldapsearch(1) manual page",
+        "url": "https://keith.github.io/xcode-man-pages/ldapsearch.1.html"
+      },
+      {
+        "name": "MITRE ATT&CK T1087.002 - Account Discovery: Domain Account",
+        "url": "https://attack.mitre.org/techniques/T1087/002/"
+      },
+      {
+        "name": "MITRE ATT&CK T1558.003 - Steal or Forge Kerberos Tickets: Kerberoasting",
+        "url": "https://attack.mitre.org/techniques/T1558/003/"
+      },
+      {
+        "name": "MITRE ATT&CK T1558.004 - Steal or Forge Kerberos Tickets: AS-REP Roasting",
+        "url": "https://attack.mitre.org/techniques/T1558/004/"
       }
     ],
     "acknowledgements": []
@@ -2358,6 +2802,89 @@
     ]
   },
   {
+    "name": "pbcopy",
+    "author": "Hare Sudhan (@cyb3rbuff)",
+    "short_description": "Write standard input into the macOS pasteboard (clipboard).",
+    "full_description": "The pbcopy binary reads standard input and places it on a macOS pasteboard, defaulting to the general pasteboard when none is specified. Input is stored as plain text unless it begins with an Encapsulated PostScript or Rich Text Format header, in which case it is stored as that type. It is the write counterpart to pbpaste and is intended for scripting and piping clipboard content between commands. The same primitive lets an attacker who already has code execution alter what a victim later pastes. Because the pasteboard is the trusted hand-off point between what a user copies and what they submit, overwriting it turns a normal paste into an attacker-controlled action, and clearing it can remove sensitive data before it is captured.",
+    "created": "2026-09-20",
+    "example_use_cases": [
+      {
+        "name": "Stage a command on the clipboard for clipboard-based execution",
+        "description": "pbcopy places a command string on the pasteboard, which a second stage retrieves with pbpaste and executes via command substitution. Using the clipboard as the carrier keeps the payload out of the process command line of the stager itself. It requires only user-level code execution.",
+        "code": "echo '<COMMAND>' | pbcopy && eval \"$(pbpaste)\"",
+        "tactics": [
+          "Execution"
+        ],
+        "tags": [
+          "clipboard",
+          "pasteboard"
+        ]
+      },
+      {
+        "name": "Park staged data on a non-general pasteboard to evade inspection",
+        "description": "The -pboard flag selects which pasteboard pbcopy writes to. pbpaste and most tooling read the general pasteboard by default, so data written to the find, font, or ruler pasteboard is less likely to surface in a routine clipboard check while still being retrievable by an attacker who knows where to look. It requires only user-level code execution.",
+        "code": "cat <STAGED_FILE> | pbcopy -pboard find",
+        "tactics": [
+          "Collection",
+          "Defense Evasion"
+        ],
+        "tags": [
+          "clipboard",
+          "pasteboard",
+          "staging"
+        ]
+      },
+      {
+        "name": "Clear the clipboard to destroy sensitive copied data",
+        "description": "Piping empty input to pbcopy overwrites the general pasteboard with nothing, discarding whatever the user had copied (for example a password copied from a manager). An attacker can use this to remove sensitive data after harvesting it, or to erase evidence that clipboard monitoring took place, before an investigator or DLP agent inspects the pasteboard. It requires only user-level code execution.",
+        "code": "printf '' | pbcopy",
+        "tactics": [
+          "Defense Evasion"
+        ],
+        "tags": [
+          "clipboard",
+          "pasteboard"
+        ]
+      }
+    ],
+    "paths": [
+      "/usr/bin/pbcopy"
+    ],
+    "detections": [
+      {
+        "name": "Process execution: /usr/bin/pbcopy executed repeatedly in a short window alongside pbpaste by the same process tree, which is the polling pattern of clipper malware watching for a copied value to overwrite.",
+        "url": "N/A"
+      },
+      {
+        "name": "Command line argument detection: pbcopy invoked with -pboard naming a non-general pasteboard (find, font, ruler), which is unusual outside specialized tooling and can indicate data staged where a routine clipboard check will not look.",
+        "url": "N/A"
+      },
+      {
+        "name": "Process lineage: pbpaste piped into eval, sh, bash or zsh (for example eval \"$(pbpaste)\"), indicating a command is being retrieved from the clipboard and executed.",
+        "url": "N/A"
+      },
+      {
+        "name": "Endpoint Security process telemetry (ES_EVENT_TYPE_NOTIFY_EXEC): /usr/bin/pbcopy launched by a non-interactive or persistence-launched parent (a LaunchAgent-spawned script) rather than an interactive shell.",
+        "url": "N/A"
+      }
+    ],
+    "resources": [
+      {
+        "name": "MITRE ATT&CK T1115: Clipboard Data",
+        "url": "https://attack.mitre.org/techniques/T1115/"
+      },
+      {
+        "name": "Atomic Red Team T1115: Execute commands from clipboard",
+        "url": "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1115/T1115.md"
+      },
+      {
+        "name": "SentinelOne: 7 Kinds of Data Malware Steals from macOS Users (Pasteboard Contents)",
+        "url": "https://www.sentinelone.com/blog/session-cookies-keychains-ssh-keys-and-more-7-kinds-of-data-malware-steals-from-macos-users/"
+      }
+    ],
+    "acknowledgements": []
+  },
+  {
     "name": "pbpaste",
     "author": "Brendan Chamberlain (@infosecB)",
     "short_description": "Paste the contents of clipboard to the terminal.",
@@ -2529,6 +3056,130 @@
       {
         "name": "Plist File Modification (MITRE ATT&CK)",
         "url": "https://attack.mitre.org/techniques/T1647/"
+      }
+    ],
+    "acknowledgements": []
+  },
+  {
+    "name": "pmset",
+    "author": "Hare Sudhan (@cyb3rbuff)",
+    "short_description": "Read and modify macOS power management settings, including scheduled wake/power-on events.",
+    "full_description": "pmset manipulates system power management settings such as idle sleep timers, wake-on-network behavior, hibernation, and scheduled sleep/wake/power-on events. Reading settings and event history is unprivileged; modifying any setting requires root. All changes are persisted per-system (not per-user) in property lists under /Library/Preferences/SystemConfiguration/ (com.apple.PowerManagement.plist for settings, com.apple.AutoWake.plist for scheduled events), so they survive reboots without a launchd job or login item.\nIt is attractive to an attacker for two reasons. First, its scheduled \"wake\" and \"power on\" events and its keep-awake settings let an operator guarantee that a laptop that would otherwise be asleep or shut down is running and reachable at a chosen time, giving a predictable window for command and control that lives outside the launchd/cron locations defenders normally inspect. Second, the read side (pmset -g log and -g assertions) exposes a detailed sleep/wake timeline and the processes currently holding the machine awake, which is a reliable proxy for whether a human is actively using the host.",
+    "created": "2026-09-20",
+    "example_use_cases": [
+      {
+        "name": "Schedule a recurring wake or power-on for a command-and-control window",
+        "description": "Running as root, pmset can register a repeating \"wakeorpoweron\" event that wakes a sleeping Mac (or powers on a Mac that was shut down, on hardware that supports it) at a fixed time on chosen weekdays. This guarantees the host is running and network-reachable during the operator's chosen window without an implant having to keep the machine awake continuously. The schedule is stored in /Library/Preferences/SystemConfiguration/com.apple.AutoWake.plist rather than in a launchd job, so it does not appear alongside conventional persistence.",
+        "code": "sudo pmset repeat wakeorpoweron MTWRFSU 03:00:00",
+        "tactics": [
+          "Persistence",
+          "Command and Control"
+        ],
+        "tags": [
+          "schedule",
+          "wakeorpoweron",
+          "power-management"
+        ]
+      },
+      {
+        "name": "Disable idle sleep to keep an implanted host awake and reachable",
+        "description": "As root, pmset can set the system, disk, and display idle-sleep timers to 0 (never) across all power sources. A value of 0 disables the timer entirely, so a laptop left on battery no longer sleeps and drops its network connection, keeping a long-running C2 channel or exfiltration session alive. Unlike caffeinate, which holds a transient assertion for the life of a process, this writes a persistent setting to com.apple.PowerManagement.plist that survives reboots and shows no owning process in the assertions list.",
+        "code": "sudo pmset -a sleep 0 disksleep 0 displaysleep 0",
+        "tactics": [
+          "Command and Control",
+          "Defense Evasion"
+        ],
+        "tags": [
+          "sleep",
+          "keep-awake",
+          "power-management"
+        ]
+      },
+      {
+        "name": "Enable wake on network access for remote wake from the LAN",
+        "description": "As root, pmset can enable \"womp\" (wake on ethernet magic packet). Once set, an attacker positioned on the same broadcast domain can send a Wake-on-LAN magic packet to the target's MAC address to bring a sleeping Mac back online on demand, rather than waiting on a fixed schedule. The wake path brings the OS up behind the lock screen, so it is a network-reachability primitive, not an authentication bypass.",
+        "code": "sudo pmset -a womp 1",
+        "tactics": [
+          "Command and Control",
+          "Persistence"
+        ],
+        "tags": [
+          "womp",
+          "wake-on-lan",
+          "power-management"
+        ]
+      },
+      {
+        "name": "Review sleep/wake history to infer when the host is unattended",
+        "description": "pmset -g log prints a timeline of sleeps, wakes, display-on/off transitions, and their causes, and requires no privileges. An operator can use it to infer when the host is actively used versus left unattended, informing the timing of hands-on-keyboard activity to avoid an active user noticing.",
+        "code": "pmset -g log",
+        "tactics": [
+          "Discovery"
+        ],
+        "tags": [
+          "user-activity"
+        ]
+      },
+      {
+        "name": "List active power assertions to identify running applications",
+        "description": "pmset -g assertions lists the processes currently preventing idle or display sleep, without requiring root. This exposes which applications are actively running and holding the machine awake, complementing the sleep/wake timeline as a signal of user presence and workload.",
+        "code": "pmset -g assertions",
+        "tactics": [
+          "Discovery"
+        ],
+        "tags": [
+          "assertions",
+          "user-activity"
+        ]
+      },
+      {
+        "name": "Retain the FileVault key across standby by disabling key destruction",
+        "description": "On a FileVault-encrypted Mac, destroyfvkeyonstandby controls whether the volume key is purged from memory when the system enters standby. Setting it to 0 (retain) as root keeps the key resident so the machine wakes without a password prompt, which both preserves seamless access for the attacker and keeps the key available in memory for a later extraction attempt. This weakens the at-rest protection FileVault provides during sleep.",
+        "code": "sudo pmset -a destroyfvkeyonstandby 0",
+        "tactics": [
+          "Credential Access",
+          "Defense Evasion"
+        ],
+        "tags": [
+          "filevault",
+          "destroyfvkeyonstandby",
+          "power-management"
+        ]
+      }
+    ],
+    "paths": [
+      "/usr/bin/pmset"
+    ],
+    "detections": [
+      {
+        "name": "Command-line detection: pmset invoked with 'repeat' or 'schedule' and a wake/wakeorpoweron/poweron type, indicating a scheduled power event was created",
+        "url": "N/A"
+      },
+      {
+        "name": "Command-line detection: pmset setting sleep/disksleep/displaysleep to 0, or setting womp 1 or destroyfvkeyonstandby 0",
+        "url": "N/A"
+      },
+      {
+        "name": "File integrity monitoring: unexpected changes to /Library/Preferences/SystemConfiguration/com.apple.AutoWake.plist (scheduled events) or com.apple.PowerManagement.plist (power settings)",
+        "url": "N/A"
+      }
+    ],
+    "resources": [
+      {
+        "name": "pmset(1) man page (Xcode man pages mirror)",
+        "url": "https://keith.github.io/xcode-man-pages/pmset.1.html"
+      },
+      {
+        "name": "pmset reference and scheduled-event plist locations (DSSW)",
+        "url": "https://www.dssw.co.uk/reference/pmset/"
+      },
+      {
+        "name": "Disable Mac Wake-on-LAN to Reduce Attack Surface (Automox)",
+        "url": "https://www.automox.com/worklets/disable-wake-network-access"
+      },
+      {
+        "name": "destroyfvkeyonstandby and FileVault key retention (drduh macOS Security and Privacy Guide)",
+        "url": "https://github.com/drduh/macOS-Security-and-Privacy-Guide/issues/124"
       }
     ],
     "acknowledgements": []
@@ -4077,6 +4728,61 @@
       {
         "name": "Living-off-the-Land: Exploring macOS LOOBins and Crafting Detection Rules - tmutil",
         "url": "https://danielcortez.substack.com/p/living-off-the-land-exploring-macos-0fd"
+      }
+    ],
+    "acknowledgements": []
+  },
+  {
+    "name": "trash",
+    "author": "Hare Sudhan (@cyb3rbuff)",
+    "short_description": "Move files and directories into the user's Trash folder from the command line without invoking rm or unlink.",
+    "full_description": "trash is a built-in command-line utility that first appeared in macOS 15 (Sequoia). It takes one or more file or\ndirectory paths and moves each item into the current user's Trash folder (~/.Trash), the same result a user gets by\nchoosing \"Move to Trash\" in the Finder. For an attacker it is an indicator-removal primitive: payloads, staging\ndirectories, and dropped files leave their original paths through a move (a rename on the same volume) rather than an\nunlink(2), so file-deletion telemetry and rules keyed on rm, unlink, or secure-erase tools such as srm or shred do not\nobserve the activity. It is macOS-specific, relying on the user Trash folder semantics, and has no GTFOBins entry. Its\nevasion value is limited: trashed items stay fully recoverable in ~/.Trash until the Trash is emptied, and trash has no\nflag to empty the Trash, so it conceals a removal from deletion-focused detection without destroying the data.\n",
+    "created": "2026-09-20",
+    "example_use_cases": [
+      {
+        "name": "Move files and directories to the Trash without rm or unlink",
+        "description": "trash moves each named file or directory into ~/.Trash. On the same volume this is a rename rather than an unlink(2) of the original path, so endpoint rules and log-based monitoring keyed on rm, unlink, or secure-delete utilities do not fire when an artifact leaves its staging location. A directory is moved as a whole subtree in one call, replacing an rm -rf walk. The running account needs an existing ~/.Trash (present for a normal login user). Items land in the Trash and stay recoverable until it is emptied, so this hides the removal from deletion telemetry rather than destroying the data.\n",
+        "code": "trash /private/tmp/stage.bin /Users/<USER>/Library/LaunchAgents/com.attacker.helper.plist /Users/<USER>/Library/Caches/.workdir",
+        "tactics": [
+          "Defense Evasion"
+        ],
+        "tags": [
+          "indicator-removal"
+        ]
+      },
+      {
+        "name": "Verify a scripted cleanup with --stopOnError",
+        "description": "The --stopOnError (-s) flag makes trash exit with an error if any item cannot be moved to the Trash, and --verbose (-v) reports each move. A cleanup or self-destruct routine uses these to confirm that every artifact was removed and to branch to a fallback if one could not be, without calling rm. The removed items still land in ~/.Trash and are recoverable until the Trash is emptied.\n",
+        "code": "trash --stopOnError --verbose /private/tmp/impl /private/tmp/creds.json",
+        "tactics": [
+          "Defense Evasion"
+        ],
+        "tags": [
+          "cleanup"
+        ]
+      }
+    ],
+    "paths": [
+      "/usr/bin/trash"
+    ],
+    "detections": [
+      {
+        "name": "Process execution: alert on /usr/bin/trash whose parent is a non-interactive or scripted process rather than an interactive user shell or the Finder, especially when its file arguments point at staging paths such as /tmp, /private/tmp, or /Users/*/Library/LaunchAgents",
+        "url": "N/A"
+      },
+      {
+        "name": "Endpoint Security file telemetry: correlate rename events that move recently created files into a user's ~/.Trash by a process other than Finder; a create-then-trash sequence on the same path from a non-GUI process is anomalous",
+        "url": "N/A"
+      }
+    ],
+    "resources": [
+      {
+        "name": "Michael Tsai: The trash Command (behaviour and macOS 15 availability)",
+        "url": "https://mjtsai.com/blog/2025/08/26/the-trash-command/"
+      },
+      {
+        "name": "MITRE ATT&CK T1070.004: Indicator Removal: File Deletion",
+        "url": "https://attack.mitre.org/techniques/T1070/004/"
       }
     ],
     "acknowledgements": []
