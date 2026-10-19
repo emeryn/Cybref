@@ -336,14 +336,27 @@ class SamsungScraper(ManufacturerScraper):
         return "unknown"
 
     async def fetch_devices(self) -> list[DeviceInfo]:
-        async with self._client(self.KNOX_URL) as client:
+        async with self._client(self.KNOX_URL, _BROWSER_HEADERS) as client:
             try:
                 resp = await client.get("/en/api/supported-devices", params={"limit": "5000"})
                 resp.raise_for_status()
             except httpx.HTTPError as exc:
                 logger.error("Failed to fetch device list: %s", exc)
                 return []
-            knox_data = resp.json()
+            try:
+                knox_data = resp.json()
+            except ValueError as exc:
+                logger.error(
+                    "Failed to decode device list response as JSON "
+                    "(status=%d, content-type=%s): %s",
+                    resp.status_code,
+                    resp.headers.get("content-type", "unknown"),
+                    exc,
+                )
+                return []
+            if not isinstance(knox_data, dict) or not isinstance(knox_data.get("data"), list):
+                logger.error("Unexpected device list response format from Samsung Knox")
+                return []
 
         frequencies: dict[str, str] = {}
         try:
