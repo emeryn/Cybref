@@ -14453,6 +14453,7 @@ affinity-docs1,,tcp,Affinity Photo document sharing,[Serif_Europe_Ltd],[Tom_Lach
 affinity-docs2,,tcp,Affinity Publisher document sharing,[Serif_Europe_Ltd],[Tom_Lachecki],2023-03-30,,,,,Defined TXT keys: Proprietary
 affinity-cntent,,tcp,Affinity content sharing,[Serif_Europe_Ltd],[Tom_Lachecki],2023-03-30,,,,,Defined TXT keys: Proprietary
 ai-adp,,tcp,AI Agent Discovery Protocol (ADP),[Harry_Lian],[Harry_Lian],2026-06-12,,[draft-pro-adp-agent-discovery-00],,,Defined TXT keys: None
+ai-gateway,,tcp,AI Gateway Local Discovery,[Changshan_Su],[Changshan_Su],2026-10-27,,[draft-su-ai-gateway-discovery-00],,,"Defined TXT keys: txtvers, path, tls, auth, auth_type, protocols, product, id, role"
 airdrop,,tcp,Airdrop,[Apple_Inc],[Marc_Krochmal_2],2012-03-02,,,,,"Defined TXT keys: flags, phash, ehash, cname"
 airmate,,tcp,Airmate interworking protocol,[Myriel_Aviation_-_Airmate],[Daniel_Mavrakis_3],2020-09-21,,,,,Defined TXT keys: proprietary
 airmate,,udp,Airmate interworking protocol,[Myriel_Aviation_-_Airmate],[Daniel_Mavrakis_3],2020-09-21,,,,,Defined TXT keys: proprietary
@@ -15083,6 +15084,7 @@ ni-mail,,udp,NI MAIL,[Steve_Kille],[Steve_Kille],2017-05-18,,,,,Defined TXT keys
 ni-rt,,tcp,National Instruments Real-Time Target,[National_Instruments],[Joshua_Prewitt],2011-10-24,,,,,"Defined TXT keys: MAC, OS, OSVer, ProcArch"
 ni-sysapi,,tcp,National Instruments System API Service,[National_Instruments],[Joshua_Prewitt],2011-10-24,,,,,"Defined TXT keys: MAC, Experts, Version"
 nodel,,tcp,Lightweight event based control protocol utilising JavaScript Object Notation,[Lumicom],[Michael_Cartmel],2013-02-07,,,,,Defined TXT keys: None
+noonien,,tcp,noonien peer-to-peer memory replication,[Sequi_Company],[Samuele_Sequi_2],2026-10-26,,,,,Defined TXT keys: None
 nq,,tcp,Network Quality test server endpoint,[Stuart_Cheshire],[Stuart_Cheshire],2022-07-11,,,,,Defined TXT keys: None
 ntlx-arch,,,American Dynamics Intellex Archive Management Service,[Gary_Sands],[Gary_Sands],,,,,,"Defined TXT keys: txtvers, macaddress, protovers, model, serial"
 ntlx-ent,,,American Dynamics Intellex Enterprise Management Service,[Gary_Sands],[Gary_Sands],,,,,,"Defined TXT keys: txtvers, macaddress, protovers, model, serial"
