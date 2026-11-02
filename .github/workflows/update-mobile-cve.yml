@@ -1,0 +1,60 @@
+name: Weekly - Update Mobile CVE
+
+on:
+  workflow_run:
+    workflows: ["Weekly - Download NVD CVE & CPE"]
+    types: [completed]
+  schedule:
+    - cron: '30 22 * * 0'
+  workflow_dispatch:
+    inputs:
+      from_scratch:
+        description: Rebuild everything from scratch (ignore previous mobile output, re-scrape all OEMs, re-enrich all CVEs)
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  update-mobile-cve:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Pull latest (NVD workflow may have pushed)
+        if: github.event_name == 'workflow_run'
+        run: git pull origin main
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Run mobile CVE sync
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          mkdir -p output/mobile
+          cd mcb
+          ARGS=(--output ../output/mobile --nvd-dir ../output)
+          if [ "${{ inputs.from_scratch }}" = "true" ]; then
+            ARGS+=(--from-scratch)
+          fi
+          uv run mcb.py "${ARGS[@]}"
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add output/mobile
+          if git diff --staged --quiet; then
+            echo "No change"
+          else
+            git commit -m "chore: update mobile CVE refset $(date +'%Y-%m-%d')"
+            git push
+          fi
