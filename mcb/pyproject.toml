@@ -1,0 +1,9 @@
+[project]
+name = "cybref-mcb"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4",
+    "httpx[brotli]",
+    "lxml",
+]
