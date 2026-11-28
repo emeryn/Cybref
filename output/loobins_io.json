@@ -847,7 +847,7 @@
     "detections": [
       {
         "name": "Jamf Protect: Detect dns-sd discovery activity",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/dns_service_discovery"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/dns_service_discovery.yaml"
       }
     ],
     "resources": [
@@ -1128,13 +1128,13 @@
     "detections": [
       {
         "name": "Jamf Protect: Detect user account creation with dscl",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/user_created_by_dscl"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/user_created_by_dscl.yaml"
       }
     ],
     "resources": [
       {
         "name": "MacOS Red Teaming - HackTricks",
-        "url": "https://book.hacktricks.xyz/macos-hardening/macos-security-and-privilege-escalation/macos-red-teaming"
+        "url": "https://book.hacktricks.wiki/en/macos-hardening/macos-red-teaming/index.html"
       },
       {
         "name": "MITRE ATT&CK T1136.001 Create Account: Local Account",
@@ -1877,7 +1877,7 @@
       },
       {
         "name": "Jamf Protect: Ioreg used to detect if the screen is locked",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/lockscreen_check"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/lockscreen_check.yaml"
       }
     ],
     "resources": [
@@ -2525,7 +2525,7 @@
       },
       {
         "name": "Jamf Protect: Detect launchctl activity that unloads or bootsout specific service",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/launchctl_unload_and_bootout_events"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/launchctl_unload_and_bootout.yaml"
       }
     ],
     "resources": [
@@ -2875,7 +2875,7 @@
     "detections": [
       {
         "name": "Jamf Protect: Detect activity related to mdfind used to search for stored AWS keys",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/mdfind_search_aws_keys"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/mdfind_search_aws_keys.yaml"
       }
     ],
     "resources": [
@@ -3526,11 +3526,11 @@
     "detections": [
       {
         "name": "Jamf Protect: Detect all curl and nscurl activity",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/all_curl_activity"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/all_curl_activity.yaml"
       },
       {
         "name": "Jamf Protect: Detect file downloads using the insecure argument for curl and nscurl",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/file_download_curl_insecure"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/file_download_curl_insecure.yaml"
       },
       {
         "name": "Sigma: File Download Via Nscurl - MacOS",
@@ -4646,7 +4646,7 @@
     "resources": [
       {
         "name": "macOS MDM introduction.",
-        "url": "https://book.hacktricks.xyz/macos-hardening/macos-security-and-privilege-escalation/macos-mdm"
+        "url": "https://book.hacktricks.wiki/en/macos-hardening/macos-red-teaming/macos-mdm/index.html"
       }
     ],
     "acknowledgements": []
@@ -5122,7 +5122,7 @@
       },
       {
         "name": "Jamf Protect: Detect Keychain dumping using security",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/keychain_dumped"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/keychain_dumped.yaml"
       }
     ],
     "resources": [
@@ -5235,7 +5235,7 @@
     "detections": [
       {
         "name": "Jamf Protect: Detect attempts to dump BTM or being reverted to installation defaults",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/sfltool_activity"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/sfltool_activity.yaml"
       }
     ],
     "resources": [
@@ -5703,7 +5703,7 @@
       },
       {
         "name": "Jamf Protect: Detect SQLite3 activity used to associated URLs with downloaded files",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/sqlite3_downloads"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/sqlite3_downloads.yaml"
       }
     ],
     "resources": [
@@ -5957,7 +5957,7 @@
       },
       {
         "name": "Jamf Protect: Detect arbitrary code execution using a swift one-liner",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/swift_oneline_command_execution"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/swift_oneline_command_execution.yaml"
       }
     ],
     "resources": [
@@ -6135,7 +6135,7 @@
     "detections": [
       {
         "name": "Jamf Protect: Detect activity related to sysctl in an interactive shell",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/sysctl_activity"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/sysctl_activity.yaml"
       }
     ],
     "resources": [
@@ -6239,7 +6239,7 @@
       },
       {
         "name": "Jamf Protect: Detect system_profiler activity that gathers system information",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/system_profiler_activity"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/system_profiler_activity.yaml"
       }
     ],
     "resources": [
@@ -6403,7 +6403,7 @@
       },
       {
         "name": "Jamf Protect: Detect systemsetup activity that enables remotelogin or appleremoteevents",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/systemsetup_activity"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/systemsetup_activity.yaml"
       }
     ],
     "resources": [
@@ -6642,11 +6642,11 @@
     "resources": [
       {
         "name": "tftp man page",
-        "url": "https://ss64.com/mac/tftp.html"
+        "url": "https://keith.github.io/xcode-man-pages/tftp.1.html"
       },
       {
         "name": "TFTP (Trivial File Transfer Protocol)",
-        "url": "https://en.wikipedia.org/https://hackviser.com/tactics/pentesting/services/tftp"
+        "url": "https://hackviser.com/tactics/pentesting/services/tftp"
       },
       {
         "name": "Uncovered: Uncovering Risk Exposure from Publicly Accessible Unauthenticated TFTP",
@@ -6743,7 +6743,7 @@
     "detections": [
       {
         "name": "Jamf Protect: Detect the deletion of localsnapshots",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/tmutil_activity"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/tmutil_activity.yaml"
       },
       {
         "name": "Sigma: Time Machine Backup Deletion Attempt Via Tmutil - MacOS",
@@ -6913,7 +6913,7 @@
       },
       {
         "name": "Jamf Protect: Detect activity related to xattr and extended attributes",
-        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/xattr_extended_attributes_activity"
+        "url": "https://github.com/jamf/jamfprotect/blob/main/custom_analytic_detections/xattr_extended_attributes_activity.yaml"
       }
     ],
     "resources": [
